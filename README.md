@@ -1,7 +1,5 @@
 # HuaweiRtcEngine
 
-![pub package](https://img.shields.io/pub/v/agora_rtc_engine.svg)
-
 这个是[Huawei RTC SDK](https://support.huaweicloud.com/demo-rtc/rtc_03_0001.html) 的Flutter封装。
 
 实时互动直播SDK：提供连麦和实时音视频流传输（收发双向）的能力，设置最基本的连麦等功能。
