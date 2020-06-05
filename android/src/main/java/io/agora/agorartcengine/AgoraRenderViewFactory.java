@@ -25,10 +25,10 @@ public class AgoraRenderViewFactory extends PlatformViewFactory {
 
 
     @Override
-    public PlatformView create(Context context, int id, Object o) {
+    public PlatformView create(Context context, int viewId, Object args) {
         SurfaceView view = RtcEngine.createRenderer(context.getApplicationContext());
-        AgoraRendererView rendererView = new AgoraRendererView(view, id);
-        mEnginePlugin.addView(view, id);
+        AgoraRendererView rendererView = new AgoraRendererView(view, viewId);
+        mEnginePlugin.addView(view, viewId);
         return rendererView;
     }
 }

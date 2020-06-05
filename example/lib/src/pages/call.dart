@@ -5,17 +5,21 @@ import '../utils/settings.dart';
 
 class CallPage extends StatefulWidget {
   /// non-modifiable channel name of the page
-  final String channelName;
+  final String roomId;
+
+  final String userId;
+  final RoleType roleType;
 
   /// Creates a call page with given channel name.
-  const CallPage({Key key, this.channelName}) : super(key: key);
+  const CallPage({Key key, this.roomId, this.userId, this.roleType})
+      : super(key: key);
 
   @override
   _CallPageState createState() => _CallPageState();
 }
 
 class _CallPageState extends State<CallPage> {
-  static final _users = <int>[];
+  static final _users = <String>[];
   final _infoStrings = <String>[];
   bool muted = false;
 
@@ -24,7 +28,7 @@ class _CallPageState extends State<CallPage> {
     // clear users
     _users.clear();
     // destroy sdk
-    AgoraRtcEngine.leaveChannel();
+    AgoraRtcEngine.leaveRoom();
     AgoraRtcEngine.destroy();
     super.dispose();
   }
@@ -49,31 +53,34 @@ class _CallPageState extends State<CallPage> {
 
     await _initAgoraRtcEngine();
     _addAgoraEventHandlers();
-    await AgoraRtcEngine.enableWebSdkInteroperability(true);
-    await AgoraRtcEngine.setParameters(
-        '''{\"che.video.lowBitRateStreamParameter\":{\"width\":320,\"height\":180,\"frameRate\":15,\"bitRate\":140}}''');
-    await AgoraRtcEngine.joinChannel(null, widget.channelName, null, 0);
+//    await AgoraRtcEngine.setParameters(
+//        '''{\"che.video.lowBitRateStreamParameter\":{\"width\":320,\"height\":180,\"frameRate\":15,\"bitRate\":140}}''');
+    UserInfo userInfo = new UserInfo();
+    userInfo.userId = widget.userId;
+    userInfo.userName = widget.userId;
+    userInfo.role = widget.roleType.index;
+    await AgoraRtcEngine.joinRoom(
+        userInfo, widget.roomId, MediaType.MEDIA_TYPE_AUDIO_VIDEO);
+//    Channel(null, widget.channelName, null, 0);
   }
 
   /// Create agora sdk instance and initialize
   Future<void> _initAgoraRtcEngine() async {
-    await AgoraRtcEngine.create(APP_ID);
-    await AgoraRtcEngine.enableVideo();
+    await AgoraRtcEngine.create(APP_DOMAIN, APP_ID);
   }
 
   /// Add agora event handlers
   void _addAgoraEventHandlers() {
-    AgoraRtcEngine.onError = (dynamic code) {
+    AgoraRtcEngine.onError = (int error, String msg) {
       setState(() {
-        final info = 'onError: $code';
+        final info = 'onError: $error: $msg';
         _infoStrings.add(info);
       });
     };
 
-    AgoraRtcEngine.onJoinChannelSuccess = (
+    AgoraRtcEngine.onJoinRoomSuccess = (
       String channel,
-      int uid,
-      int elapsed,
+      String uid,
     ) {
       setState(() {
         final info = 'onJoinChannel: $channel, uid: $uid';
@@ -81,37 +88,35 @@ class _CallPageState extends State<CallPage> {
       });
     };
 
-    AgoraRtcEngine.onLeaveChannel = () {
+    AgoraRtcEngine.onLeaveRoom = (String roomId, String userId) {
       setState(() {
-        _infoStrings.add('onLeaveChannel');
+        _infoStrings.add('userId:$userId onLeaveChannel: room:$roomId');
         _users.clear();
       });
     };
 
-    AgoraRtcEngine.onUserJoined = (int uid, int elapsed) {
+    AgoraRtcEngine.onUserJoined =
+        (String roomId, String userId, String nickName) {
       setState(() {
-        final info = 'userJoined: $uid';
+        final info = 'userJoined: $userId';
         _infoStrings.add(info);
-        _users.add(uid);
+        _users.add(userId);
       });
     };
 
-    AgoraRtcEngine.onUserOffline = (int uid, int reason) {
+    AgoraRtcEngine.onUserOffline = (String roomId, String userId, int reason) {
       setState(() {
-        final info = 'userOffline: $uid';
+        final info = 'userOffline: $userId';
         _infoStrings.add(info);
-        _users.remove(uid);
+        _users.remove(userId);
       });
     };
 
-    AgoraRtcEngine.onFirstRemoteVideoFrame = (
-      int uid,
-      int width,
-      int height,
-      int elapsed,
-    ) {
+    AgoraRtcEngine.onFirstRemoteVideoDecoded =
+        (String roomId, String userId, int width, int height) {
       setState(() {
-        final info = 'firstRemoteVideo: $uid ${width}x $height';
+        final info =
+            'room:$roomId firstRemoteVideo: user:$userId ${width}x $height';
         _infoStrings.add(info);
       });
     };
@@ -120,9 +125,9 @@ class _CallPageState extends State<CallPage> {
   /// Helper function to get list of native views
   List<Widget> _getRenderViews() {
     final List<AgoraRenderWidget> list = [
-      AgoraRenderWidget(0, local: true, preview: true),
+      AgoraRenderWidget(widget.userId, local: true, preview: true),
     ];
-    _users.forEach((int uid) => list.add(AgoraRenderWidget(uid)));
+    _users.forEach((String uid) => list.add(AgoraRenderWidget(uid)));
     return list;
   }
 
@@ -286,7 +291,7 @@ class _CallPageState extends State<CallPage> {
     setState(() {
       muted = !muted;
     });
-    AgoraRtcEngine.muteLocalAudioStream(muted);
+    AgoraRtcEngine.muteLocalAudio(muted);
   }
 
   void _onSwitchCamera() {

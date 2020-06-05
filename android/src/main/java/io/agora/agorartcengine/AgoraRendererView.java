@@ -13,11 +13,11 @@ import io.flutter.plugin.platform.PlatformView;
  */
 public class AgoraRendererView implements PlatformView {
     private final SurfaceView mSurfaceView;
-    private final long uid;
+    private final int viewId;
 
-    AgoraRendererView(SurfaceView surfaceView, int uid) {
+    AgoraRendererView(SurfaceView surfaceView, int viewId) {
         this.mSurfaceView = surfaceView;
-        this.uid = uid;
+        this.viewId = viewId;
     }
 
     @Override

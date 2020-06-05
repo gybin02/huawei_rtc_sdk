@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import './call.dart';
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 
 class IndexPage extends StatefulWidget {
   @override
@@ -12,6 +13,7 @@ class IndexPage extends StatefulWidget {
 class IndexState extends State<IndexPage> {
   /// create a channelController to retrieve text value
   final _channelController = TextEditingController();
+  final _userIdController = TextEditingController();
 
   /// if channel textField is validated to have error
   bool _validateError = false;
@@ -35,22 +37,29 @@ class IndexState extends State<IndexPage> {
           height: 400,
           child: Column(
             children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Expanded(
-                      child: TextField(
-                    controller: _channelController,
-                    decoration: InputDecoration(
-                      errorText:
-                          _validateError ? 'Channel name is mandatory' : null,
-                      border: UnderlineInputBorder(
-                        borderSide: BorderSide(width: 1),
-                      ),
-                      hintText: 'Channel name',
-                    ),
-                  ))
-                ],
-              ),
+              Expanded(
+                  child: TextField(
+                controller: _channelController,
+                decoration: InputDecoration(
+                  errorText: _validateError ? 'room name is mandatory' : null,
+                  border: UnderlineInputBorder(
+                    borderSide: BorderSide(width: 1),
+                  ),
+                  hintText: 'room name',
+                ),
+              )),
+              Expanded(
+                  child: TextField(
+                controller: _userIdController,
+                decoration: InputDecoration(
+                  errorText: _validateError ? 'UserId is mandatory' : null,
+                  border: UnderlineInputBorder(
+                    borderSide: BorderSide(width: 1),
+                  ),
+                  hintText: 'UserId',
+                ),
+              )),
+              buildRole(),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: Row(
@@ -58,7 +67,7 @@ class IndexState extends State<IndexPage> {
                     Expanded(
                       child: RaisedButton(
                         onPressed: onJoin,
-                        child: Text('Join'),
+                        child: Text('加入'),
                         color: Colors.blueAccent,
                         textColor: Colors.white,
                       ),
@@ -80,7 +89,8 @@ class IndexState extends State<IndexPage> {
           ? _validateError = true
           : _validateError = false;
     });
-    if (_channelController.text.isNotEmpty) {
+    if (_channelController.text.isNotEmpty &&
+        _userIdController.text.isNotEmpty) {
       // await for camera and mic permissions before pushing video page
       await _handleCameraAndMic();
       // push video page with given channel name
@@ -88,7 +98,9 @@ class IndexState extends State<IndexPage> {
         context,
         MaterialPageRoute(
           builder: (context) => CallPage(
-            channelName: _channelController.text,
+            roomId: _channelController.text,
+            userId: _userIdController.text,
+            roleType: _groupValue,
           ),
         ),
       );
@@ -99,5 +111,31 @@ class IndexState extends State<IndexPage> {
     await PermissionHandler().requestPermissions(
       [PermissionGroup.camera, PermissionGroup.microphone],
     );
+  }
+
+  var _groupValue = RoleType.ROLE_TYPE_JOINER;
+
+  buildRole() {
+    return Row(
+      children: <Widget>[
+        _buildRadio(RoleType.ROLE_TYPE_JOINER),
+        Text("joiner"),
+        _buildRadio(RoleType.ROLE_TYPE_PUBLISER),
+        Text("publisher"),
+        _buildRadio(RoleType.ROLE_TYPE_PLAYER),
+        Text("player"),
+      ],
+    );
+  }
+
+  _buildRadio(RoleType roleType) {
+    return Radio(
+        value: roleType,
+        groupValue: _groupValue,
+        onChanged: (value) {
+          setState(() {
+            _groupValue = value;
+          });
+        });
   }
 }

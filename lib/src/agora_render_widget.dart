@@ -1,26 +1,27 @@
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
 
-/// AgoraRenderWidget - This widget will automatically manage the native view.
+/// 视频或者通话界面Widget - This widget will automatically manage the native view.
 ///
 /// Enables create native view with `uid` `mode` `local` and destroy native view automatically.
 ///
 class AgoraRenderWidget extends StatefulWidget {
   // uid
-  final int uid;
+  final String uid;
 
   // local flag
   final bool local;
 
-  // local preview flag;
+  /// 暂时不用先保留local preview flag;
+  ///
   final bool preview;
 
   /// render mode
-  final VideoRenderMode mode;
+  final ViewMode mode;
 
   AgoraRenderWidget(
     this.uid, {
-    this.mode = VideoRenderMode.Hidden,
+    this.mode = ViewMode.VIEW_MODE_ADAPT,
     this.local = false,
     this.preview = false,
   })  : assert(uid != null),
@@ -50,7 +51,6 @@ class _AgoraRenderWidgetState extends State<AgoraRenderWidget> {
   @override
   void dispose() {
     AgoraRtcEngine.removeNativeView(_viewId);
-    if (widget.preview) AgoraRtcEngine.stopPreview();
     super.dispose();
   }
 
@@ -72,19 +72,14 @@ class _AgoraRenderWidgetState extends State<AgoraRenderWidget> {
 
   void _bindView() {
     if (widget.local) {
-      AgoraRtcEngine.setupLocalVideo(_viewId, widget.mode);
-      if (widget.preview) AgoraRtcEngine.startPreview();
+      AgoraRtcEngine.setupLocalView(_viewId, widget.mode);
     } else {
-      AgoraRtcEngine.setupRemoteVideo(_viewId, widget.mode, widget.uid);
+      AgoraRtcEngine.setupRemoteView(_viewId, widget.mode);
     }
   }
 
   void _changeRenderMode() {
-    if (widget.local) {
-      AgoraRtcEngine.setLocalRenderMode(widget.mode);
-    } else {
-      AgoraRtcEngine.setRemoteRenderMode(widget.uid, widget.mode);
-    }
+    //暂不支持
   }
 
   @override

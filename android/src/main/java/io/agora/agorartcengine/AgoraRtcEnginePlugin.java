@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.SurfaceView;
 
 import com.huawei.rtc.IRtcEngineEventHandler;
@@ -31,6 +32,7 @@ import io.flutter.plugin.common.StandardMessageCodec;
  * @date 2020/6/5
  */
 public class AgoraRtcEnginePlugin implements MethodCallHandler, EventChannel.StreamHandler {
+    private static String TAG = "AgoraRtcEnginePlugin";
 
     private final Registrar mRegistrar;
     private static RtcEngine mRtcEngine;
@@ -85,7 +87,11 @@ public class AgoraRtcEnginePlugin implements MethodCallHandler, EventChannel.Str
     @Override
     public void onMethodCall(MethodCall call, Result result) {
         Context context = getActiveContext();
-
+        String argument = "";
+        if (call.arguments != null) {
+            argument = call.arguments.toString();
+        }
+        Log.d(TAG, "onMethodCall: method: " + call.method + "   argument: " + argument);
         switch (call.method) {
             // Core Methods
             case "create": {
@@ -140,7 +146,7 @@ public class AgoraRtcEnginePlugin implements MethodCallHandler, EventChannel.Str
                 result.success(null);
             }
             break;
-            case "setupLocalVideo": {
+            case "setupLocalView": {
                 int localViewId = call.argument("viewId");
                 SurfaceView localView = getView(localViewId);
                 int viewMode = call.argument("viewMode");
@@ -148,7 +154,7 @@ public class AgoraRtcEnginePlugin implements MethodCallHandler, EventChannel.Str
                 result.success(setupLocalView);
             }
             break;
-            case "setupRemoteVideo": {
+            case "setupRemoteView": {
                 int remoteViewId = call.argument("viewId");
                 SurfaceView view = getView(remoteViewId);
                 int viewMode = call.argument("viewMode");
@@ -220,7 +226,6 @@ public class AgoraRtcEnginePlugin implements MethodCallHandler, EventChannel.Str
             HashMap<String, Object> map = new HashMap<>();
             map.put("roomId", roomId);
             map.put("userId", userId);
-            map.put("stats", stats);
             sendEvent("onLeaveRoom", map);
         }
 
@@ -247,8 +252,8 @@ public class AgoraRtcEnginePlugin implements MethodCallHandler, EventChannel.Str
         @Override
         public void onConnectionStateChange(RtcEnums.ConnStateTypes connStateTypes, RtcEnums.ConnChangeReason connChangeReason, String description) {
             HashMap<String, Object> map = new HashMap<>();
-            map.put("connStateTypes", connStateTypes);
-            map.put("connChangeReason", connChangeReason);
+            map.put("connStateTypes", connStateTypes.ordinal());
+            map.put("connChangeReason", connChangeReason.ordinal());
             map.put("description", description);
             sendEvent("onConnectionStateChange", map);
         }
@@ -272,7 +277,7 @@ public class AgoraRtcEnginePlugin implements MethodCallHandler, EventChannel.Str
             HashMap<String, Object> map = new HashMap<>();
             map.put("roomId", roomId);
             map.put("userId", userId);
-            map.put("streamType", streamType);
+            map.put("streamType", streamType.ordinal());
             sendEvent("onAgreedStreamAvailable", map);
         }
 
@@ -293,6 +298,7 @@ public class AgoraRtcEnginePlugin implements MethodCallHandler, EventChannel.Str
 
     private void sendEvent(final String eventName, final HashMap map) {
         map.put("event", eventName);
+        Log.d(TAG, "sendEvent: " + eventName + "  params: " + map.toString());
         mEventHandler.post(new Runnable() {
             @Override
             public void run() {

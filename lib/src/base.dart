@@ -23,7 +23,7 @@ class AgoraImage {
 }
 
 class AgoraLiveTranscodingUser {
-  int uid;
+  String uid;
   int width;
   int height;
   int x;
@@ -56,18 +56,7 @@ class AgoraLiveTranscodingUser {
 
 enum AgoraAudioCodecProfileType { LCAAC, HEAAC }
 
-Map<AgoraAudioCodecProfileType, int> _resolveAudioCodecProfileType = {
-  AgoraAudioCodecProfileType.LCAAC: 0,
-  AgoraAudioCodecProfileType.HEAAC: 1,
-};
-
 enum AgoraVideoCodecProfileType { BaseLine, Main, High }
-
-Map<AgoraVideoCodecProfileType, int> _resolveVideoCodecProfileType = {
-  AgoraVideoCodecProfileType.BaseLine: 66,
-  AgoraVideoCodecProfileType.Main: 77,
-  AgoraVideoCodecProfileType.High: 100
-};
 
 enum AgoraAudioSampleRateType { LowRateType, MidRateType, HighRateType }
 
@@ -76,60 +65,6 @@ Map<AgoraAudioSampleRateType, int> _resolveAudioSampleRate = {
   AgoraAudioSampleRateType.MidRateType: 44100,
   AgoraAudioSampleRateType.HighRateType: 48000
 };
-
-class AgoraLiveTranscoding {
-  int width;
-  int height;
-  int videoBitrate;
-  int videoFramerate;
-  int videoGop;
-  AgoraVideoCodecProfileType videoCodecProfile;
-  List<AgoraLiveTranscodingUser> transcodingUsers;
-  String transcodingExtraInfo;
-  AgoraImage watermark;
-  AgoraImage backgroundImage;
-  int backgroundColor;
-  AgoraAudioSampleRateType audioSampleRate;
-  int audioBitrate;
-  int audioChannels;
-  AgoraAudioCodecProfileType audioCodecProfile;
-
-  AgoraLiveTranscoding.fromJson(Map<dynamic, dynamic> json)
-      : width = json['width'],
-        height = json['height'],
-        videoBitrate = json['videoBitrate'],
-        videoFramerate = json['videoFramerate'],
-        videoGop = json['videoGop'],
-        videoCodecProfile = json['videoCodecProfile'],
-        transcodingUsers = json['transcodingUsers'],
-        transcodingExtraInfo = json['transcodingExtraInfo'],
-        watermark = json['watermark'],
-        backgroundImage = json['backgroundImage'],
-        backgroundColor = json['backgroundColor'],
-        audioSampleRate = json['audioSampleRate'],
-        audioBitrate = json['audioBitrate'],
-        audioChannels = json['audioChannels'],
-        audioCodecProfile = json['audioCodecProfile'];
-
-  Map<String, dynamic> toJson() => {
-        'width': width,
-        'height': height,
-        'videoBitrate': videoBitrate,
-        'videoFramerate': videoFramerate,
-        'videoGop': videoGop,
-        'videoCodecProfile': _resolveVideoCodecProfileType[videoCodecProfile],
-        'transcodingUsers':
-            transcodingUsers.map((item) => item.toJson()).toList(),
-        'transcodingExtraInfo': transcodingExtraInfo,
-        'watermark': watermark.toJson(),
-        'backgroundImage': backgroundImage.toJson(),
-        'audioSampleRate': _resolveAudioCodecProfileType[audioSampleRate],
-        'audioBitrate': audioBitrate,
-        'audioChannels': audioChannels,
-        'backgroundColor': backgroundColor,
-        'audioCodecProfile': _resolveAudioCodecProfileType[audioCodecProfile],
-      };
-}
 
 class AgoraLiveInjectStreamConfig {
   int width;
@@ -166,10 +101,10 @@ class AgoraLiveInjectStreamConfig {
 }
 
 class AudioVolumeInfo {
-  int uid;
+  String uid;
   int volume;
 
-  AudioVolumeInfo(int uid, int volume) {
+  AudioVolumeInfo(String uid, int volume) {
     this.uid = uid;
     this.volume = volume;
   }
@@ -338,7 +273,7 @@ class LocalAudioStats {
 }
 
 class RemoteVideoStats {
-  final int uid;
+  final String uid;
   final int width;
   final int height;
   final int receivedBitrate;
@@ -390,7 +325,7 @@ class RemoteVideoStats {
 }
 
 class RemoteAudioStats {
-  int uid;
+  String uid;
   int quality;
   int networkTransportDelay;
   int jitterBufferDelay;
@@ -589,108 +524,6 @@ enum VideoRenderMode {
   Fit,
 }
 
-enum VoiceChanger {
-  /// The original voice (no local voice change).
-  VOICE_CHANGER_OFF,
-
-  /// An old man's voice.
-  VOICE_CHANGER_OLDMAN,
-
-  /// A little boy's voice.
-  VOICE_CHANGER_BABYBOY,
-
-  ///A little girl's voice.
-  VOICE_CHANGER_BABYGILR,
-
-  /// Zhu Bajie's voice (Zhu Bajie is a character from Journey to the West who has a voice like a growling bear).
-  VOICE_CHANGER_ZHUBAJIE,
-
-  /// Ethereal vocal effects.
-  VOICE_CHANGER_ETHEREAL,
-
-  /// Hulk's voice.
-  VOICE_CHANGER_HULK
-}
-
-enum UserPriority {
-  High,
-  Normal,
-}
-
-enum AgoraAudioEqualizationBandFrequency {
-  AgoraAudioEqualizationBand31,
-  AgoraAudioEqualizationBand62,
-  AgoraAudioEqualizationBand125,
-  AgoraAudioEqualizationBand250,
-  AgoraAudioEqualizationBand500,
-  AgoraAudioEqualizationBand1K,
-  AgoraAudioEqualizationBand2K,
-  AgoraAudioEqualizationBand4K,
-  AgoraAudioEqualizationBand8K,
-  AgoraAudioEqualizationBand16K,
-}
-
-enum AgoraAudioReverbType {
-  AgoraAudioReverbDryLevel,
-  AgoraAudioReverbWetLevel,
-  AgoraAudioReverbRoomSize,
-  AgoraAudioReverbWetDelay,
-  AgoraAudioReverbStrength,
-}
-
-enum StreamFallbackOptions {
-  /// No fallback behavior for the local/remote stream when the uplink/downlink network condition is unreliable. The quality of the stream is not guaranteed.
-  Disabled,
-
-  /// Under unreliable downlink network conditions, the remote stream falls back to the low-video stream (low resolution and low bitrate). You can only set this option in [AgoraRtcEngine.setRemoteSubscribeFallbackOption].
-  /// Nothing happens when you set this in [AgoraRtcEngine.setLocalPublishFallbackOption].
-  VideoStreamLow,
-
-  /// Under unreliable uplink network conditions, the published stream falls back audio only.
-  /// Under unreliable downlink network conditions, the remote stream first falls back to the low-video stream (low resolution and low bitrate); and then to an audio-only stream if the network condition deteriorates.
-  AudioOnly,
-}
-
-enum AudioProfile {
-  /// Default audio profile. In the communication profile, the default value is [SpeechStandard]; in the live-broadcast profile, the default value is [MusicStandard].
-  Default,
-
-  /// Sampling rate of 32 kHz, audio encoding, mono, and a bitrate of up to 18 Kbps.
-  SpeechStandard,
-
-  /// Sampling rate of 48 kHz, music encoding, mono, and a bitrate of up to 48 Kbps.
-  MusicStandard,
-
-  /// Sampling rate of 48 kHz, music encoding, stereo, and a bitrate of up to 56 Kbps.
-  MusicStandardStereo,
-
-  /// Sampling rate of 48 kHz, music encoding, mono, and a bitrate of up to 128 Kbps.
-  MusicHighQuality,
-
-  /// Sampling rate of 48 kHz, music encoding, stereo, and a bitrate of up to 192 Kbps.
-  MusicHighQualityStereo,
-}
-
-enum AudioScenario {
-  /// Default.
-  Default,
-
-  /// Entertainment scenario, supporting voice during gameplay.
-  ChatRoomEntertainment,
-
-  /// Education scenario, prioritizing fluency and stability.
-  Education,
-
-  /// Live gaming scenario, enabling the gaming audio effects in the speaker mode in a live broadcast scenario. Choose this scenario for high-fidelity music playback.
-  GameStreaming,
-
-  /// Showroom scenario, optimizing the audio quality with external professional equipment.
-  ShowRoom,
-
-  /// Gaming scenario.
-  ChatRoomGaming,
-}
-
 enum LighteningContrastLevel {
   /// Low contrast level.
   Low,
@@ -734,4 +567,104 @@ enum LocalVideoStreamError {
 
   /// The local video encoding fails.
   EncodeFailure,
+}
+
+///连接状态： https://support.huaweicloud.com/csdk-rtc/rtc_05_0005.html#rtc_05_0005__section1863519517324
+///
+enum ConnChangeReason {
+  RTC_CONN_CHANGED_CONNECTING,
+  RTC_CONN_CHANGED_JOIN_SUCCESS,
+  RTC_CONN_CHANGED_RECONNECTING,
+  RTC_CONN_CHANGED_RECONNECT_SUCCESS,
+  RTC_CONN_CHANGED_JOIN_FAILED,
+  RTC_CONN_CHANGED_RECONNCET_FAILED,
+  RTC_CONN_CHANGED_INTERRUPTED,
+  RTC_CONN_CHANGED_BANNED_BY_SERVER,
+  RTC_CONN_CHANGED_KEEP_ALIVE_TIMEOUT,
+  RTC_CONN_CHANGED_LEAVE_ROOM,
+  RTC_CONN_CHANGED_JOIN_SERVER_ERROR,
+  RTC_CONN_CHANGED_SFU_BREAKDOWN,
+  RTC_CONN_CHANGED_USER_HAS_LOGINED,
+  RTC_CONN_CHANGED_SESSIOIN_EXPIRED,
+  RTC_CONN_CHANGED_AUTH_FAILED,
+  RTC_CONN_CHANGED_SERVICE_UNREACHABLE,
+  RTC_CONN_CHANGED_AUTH_RETRY,
+  RTC_CONN_CHANGED_URL_NOT_RIGHT,
+  RTC_CONN_CHANGED_AUTH_CLOCK_SYNC,
+}
+
+enum ConnStateTypes {
+  RTC_CONNE_DISCONNECT,
+  RTC_CONNE_CONNECTING,
+  RTC_CONNE_CONNECTED,
+  RTC_CONNE_RECONNETING,
+  RTC_CONNE_STATE_FAILED,
+}
+
+enum ViewMode {
+  VIEW_MODE_PAD,
+  VIEW_MODE_CROP,
+  VIEW_MODE_ADAPT,
+}
+
+enum StreamType {
+  STREAM_TYPE_SD,
+  STREAM_TYPE_HD,
+}
+
+enum SpeakerModel {
+  AUDIO_EARPIECE,
+  AUDIO_SPEAKER,
+}
+
+enum MediaType {
+  MEDIA_TYPE_AUDIO,
+  MEDIA_TYPE_AUDIO_VIDEO,
+  MEDIA_TYPE_AUDIO_VIDEO_DATA,
+}
+
+enum RoleType {
+  ROLE_TYPE_JOINER,
+  ROLE_TYPE_PUBLISER,
+  ROLE_TYPE_PLAYER,
+}
+
+class UserInfo {
+  String userId = "";
+  String userName = "";
+  int ctime = 0;
+  String signature = "";
+  int role = RoleType.ROLE_TYPE_JOINER.index;
+  String optionalInfo = "";
+
+  Map<String, dynamic> toJson() {
+    return {
+      "userId": userId,
+      "userName": userName,
+      "ctime": ctime,
+      "signature": signature,
+      "role": role,
+      "optionalInfo": optionalInfo,
+    };
+  }
+}
+
+class LogInfo {
+  ///查看[LogLevel].index
+  int level;
+  String path;
+
+  Map<String, dynamic> toJson() {
+    return {
+      "level": level,
+      "path": path,
+    };
+  }
+}
+
+enum LogLevel {
+  LOG_LEVEL_ERROR,
+  LOG_LEVEL_WARNING,
+  LOG_LEVEL_INFO,
+  LOG_LEVEL_DEBUG,
 }
