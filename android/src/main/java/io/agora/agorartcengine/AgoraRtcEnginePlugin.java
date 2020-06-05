@@ -21,9 +21,10 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 import io.flutter.plugin.common.StandardMessageCodec;
 
 /**
- * HuaweiRtcEnginePlugin
- * 华为 RTC 引擎插件
+ * 华为 RTC 引擎插件 tcEnginePlugin
  *
+ * @author zhengxiaobin
+ * @date 2020/6/5
  */
 public class AgoraRtcEnginePlugin implements MethodCallHandler, EventChannel.StreamHandler {
 

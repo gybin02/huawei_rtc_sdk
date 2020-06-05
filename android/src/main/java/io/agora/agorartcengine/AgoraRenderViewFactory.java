@@ -9,19 +9,26 @@ import io.flutter.plugin.platform.PlatformViewFactory;
 
 import io.agora.rtc.RtcEngine;
 
+/**
+ * 注册
+ *
+ * @author zhengxiaobin
+ * @date 2020/6/5
+ */
 public class AgoraRenderViewFactory extends PlatformViewFactory {
-  private final AgoraRtcEnginePlugin mEnginePlugin;
+    private final AgoraRtcEnginePlugin mEnginePlugin;
 
-  public AgoraRenderViewFactory(MessageCodec<Object> createArgsCodec, AgoraRtcEnginePlugin enginePlugin) {
-    super(createArgsCodec);
-    this.mEnginePlugin = enginePlugin;
-  }
+    public AgoraRenderViewFactory(MessageCodec<Object> createArgsCodec, AgoraRtcEnginePlugin enginePlugin) {
+        super(createArgsCodec);
+        this.mEnginePlugin = enginePlugin;
+    }
 
-  @Override
-  public PlatformView create(Context context, int id, Object o) {
-    SurfaceView view = RtcEngine.CreateRendererView(context.getApplicationContext());
-    AgoraRendererView rendererView = new AgoraRendererView(view, id);
-    mEnginePlugin.addView(view, id);
-    return rendererView;
-  }
+
+    @Override
+    public PlatformView create(Context context, int id, Object o) {
+        SurfaceView view = RtcEngine.CreateRendererView(context.getApplicationContext());
+        AgoraRendererView rendererView = new AgoraRendererView(view, id);
+        mEnginePlugin.addView(view, id);
+        return rendererView;
+    }
 }
