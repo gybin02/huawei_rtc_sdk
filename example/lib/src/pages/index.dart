@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -11,7 +12,6 @@ class IndexPage extends StatefulWidget {
 }
 
 class IndexState extends State<IndexPage> {
-  /// create a channelController to retrieve text value
   final _channelController = TextEditingController();
   final _userIdController = TextEditingController();
 
@@ -19,8 +19,16 @@ class IndexState extends State<IndexPage> {
   bool _validateError = false;
 
   @override
+  void initState() {
+    super.initState();
+    _channelController.text = "room1";
+    _userIdController.text = "user1";
+  }
+
+  @override
   void dispose() {
     // dispose input controller
+    _channelController.dispose();
     _channelController.dispose();
     super.dispose();
   }
@@ -89,11 +97,14 @@ class IndexState extends State<IndexPage> {
           ? _validateError = true
           : _validateError = false;
     });
+
     if (_channelController.text.isNotEmpty &&
         _userIdController.text.isNotEmpty) {
       // await for camera and mic permissions before pushing video page
       await _handleCameraAndMic();
       // push video page with given channel name
+
+//      log("${_channelController.text}");
       await Navigator.push(
         context,
         MaterialPageRoute(

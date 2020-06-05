@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
 import '../utils/settings.dart';
@@ -36,7 +37,6 @@ class _CallPageState extends State<CallPage> {
   @override
   void initState() {
     super.initState();
-    // initialize agora sdk
     initialize();
   }
 
@@ -59,8 +59,9 @@ class _CallPageState extends State<CallPage> {
     userInfo.userId = widget.userId;
     userInfo.userName = widget.userId;
     userInfo.role = widget.roleType.index;
-    await AgoraRtcEngine.joinRoom(
+    var ret = await AgoraRtcEngine.joinRoom(
         userInfo, widget.roomId, MediaType.MEDIA_TYPE_AUDIO_VIDEO);
+    log("joinRoom ret: $ret");
 //    Channel(null, widget.channelName, null, 0);
   }
 
@@ -79,11 +80,12 @@ class _CallPageState extends State<CallPage> {
     };
 
     AgoraRtcEngine.onJoinRoomSuccess = (
-      String channel,
+      String room,
       String uid,
     ) {
+      log("onJoinRoomSuccess $room:$uid");
       setState(() {
-        final info = 'onJoinChannel: $channel, uid: $uid';
+        final info = 'onJoinChannel: $room, uid: $uid';
         _infoStrings.add(info);
       });
     };
@@ -98,6 +100,16 @@ class _CallPageState extends State<CallPage> {
     AgoraRtcEngine.onUserJoined =
         (String roomId, String userId, String nickName) {
       setState(() {
+        log("HwRtcDemo onUserJoined roomId:" +
+            roomId +
+            ", userId:" +
+            userId +
+            ", nickname:" +
+            nickName);
+        if (widget.userId == userId ||
+            widget.roleType == RoleType.ROLE_TYPE_PUBLISER) {
+          return;
+        }
         final info = 'userJoined: $userId';
         _infoStrings.add(info);
         _users.add(userId);
@@ -241,7 +253,7 @@ class _CallPageState extends State<CallPage> {
       child: FractionallySizedBox(
         heightFactor: 0.5,
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 48),
+          padding: const EdgeInsets.symmetric(vertical: 60),
           child: ListView.builder(
             reverse: true,
             itemCount: _infoStrings.length,

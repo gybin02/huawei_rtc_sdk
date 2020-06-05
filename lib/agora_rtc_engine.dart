@@ -113,10 +113,13 @@ class AgoraRtcEngine {
   /// Sets the remote user's video view.
   ///
   /// This method binds the remote user to the Widget created by [createNativeView].
-  static Future<int> setupRemoteView(int viewId, ViewMode viewMode) async {
+  static Future<int> setupRemoteView(int viewId, ViewMode viewMode,StreamType streamType, String userId) async {
    return await _channel.invokeMethod('setupRemoteView', {
       'viewId': viewId,
       'viewMode': viewMode.index,
+     'streamType':streamType.index,
+     'userId':userId
+
     });
   }
 
@@ -250,7 +253,7 @@ class AgoraRtcEngine {
   ///
   /// The channel name assignment is based on channelName specified in the [joinRoom] method.
   /// If the uid is not specified when [joinRoom] is called, the server automatically assigns a uid.
-  static void Function(String romm, String uid) onJoinRoomSuccess;
+  static void Function(String room, String uid) onJoinRoomSuccess;
 
   /// Occurs when a user leaves the channel.
   ///

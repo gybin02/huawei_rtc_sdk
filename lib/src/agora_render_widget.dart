@@ -21,7 +21,7 @@ class AgoraRenderWidget extends StatefulWidget {
 
   AgoraRenderWidget(
     this.uid, {
-    this.mode = ViewMode.VIEW_MODE_ADAPT,
+    this.mode = ViewMode.VIEW_MODE_CROP,
     this.local = false,
     this.preview = false,
   })  : assert(uid != null),
@@ -74,7 +74,8 @@ class _AgoraRenderWidgetState extends State<AgoraRenderWidget> {
     if (widget.local) {
       AgoraRtcEngine.setupLocalView(_viewId, widget.mode);
     } else {
-      AgoraRtcEngine.setupRemoteView(_viewId, widget.mode);
+      AgoraRtcEngine.setupRemoteView(
+          _viewId, widget.mode, StreamType.STREAM_TYPE_SD, widget.uid);
     }
   }
 
