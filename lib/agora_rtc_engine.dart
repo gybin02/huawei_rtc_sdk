@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -60,7 +61,7 @@ class AgoraRtcEngine {
   /// 设置本地麦克风静音。
   ///
   static Future<int> muteLocalAudio(bool mute) async {
-   return await _channel.invokeMethod('muteLocalAudio', {"mute": mute});
+    return await _channel.invokeMethod('muteLocalAudio', {"mute": mute});
   }
 
   // Core Video
@@ -106,20 +107,20 @@ class AgoraRtcEngine {
   ///
   /// You can call this method to bind local video streams to Widget created by [createNativeView] of the  and configure the video display settings.
   static Future<int> setupLocalView(int viewId, ViewMode viewMode) async {
-   return await _channel.invokeMethod(
+    return await _channel.invokeMethod(
         'setupLocalView', {'viewId': viewId, 'viewMode': viewMode.index});
   }
 
   /// Sets the remote user's video view.
   ///
   /// This method binds the remote user to the Widget created by [createNativeView].
-  static Future<int> setupRemoteView(int viewId, ViewMode viewMode,StreamType streamType, String userId) async {
-   return await _channel.invokeMethod('setupRemoteView', {
+  static Future<int> setupRemoteView(int viewId, ViewMode viewMode,
+      StreamType streamType, String userId) async {
+    return await _channel.invokeMethod('setupRemoteView', {
       'viewId': viewId,
       'viewMode': viewMode.index,
-     'streamType':streamType.index,
-     'userId':userId
-
+      'streamType': streamType.index,
+      'userId': userId
     });
   }
 
@@ -132,7 +133,7 @@ class AgoraRtcEngine {
   // Camera Control
   /// Switches between front and rear cameras.
   static Future<int> switchCamera() async {
-   return await _channel.invokeMethod('switchCamera');
+    return await _channel.invokeMethod('switchCamera');
   }
 
   // Miscellaneous Methods
@@ -150,9 +151,10 @@ class AgoraRtcEngine {
 //////////// End //////////////
 
   static void _addEventChannelHandler() async {
-    _sink = _eventChannel
-        .receiveBroadcastStream()
-        .listen(_eventListener, onError: onError);
+    _sink = _eventChannel.receiveBroadcastStream().listen(_eventListener,
+        onError: (error) {
+      log(error);
+    });
   }
 
   static void _removeEventChannelHandler() async {
@@ -162,6 +164,7 @@ class AgoraRtcEngine {
   // CallHandler
   static void _eventListener(dynamic event) {
     final Map<dynamic, dynamic> map = event;
+    log("sendEvent: $map");
     switch (map['event']) {
       // Core Events
       case 'onWarning':
@@ -211,7 +214,7 @@ class AgoraRtcEngine {
       case 'onFirstRemoteVideoDecoded':
         if (onFirstRemoteVideoDecoded != null) {
           onFirstRemoteVideoDecoded(
-              map["room"], map['userId'], map['width'], map["height"]);
+              map["roomId"], map['userId'], map['width'], map["height"]);
         }
         break;
 
@@ -253,7 +256,7 @@ class AgoraRtcEngine {
   ///
   /// The channel name assignment is based on channelName specified in the [joinRoom] method.
   /// If the uid is not specified when [joinRoom] is called, the server automatically assigns a uid.
-  static void Function(String room, String uid) onJoinRoomSuccess;
+  static void Function(String roomId, String uid) onJoinRoomSuccess;
 
   /// Occurs when a user leaves the channel.
   ///

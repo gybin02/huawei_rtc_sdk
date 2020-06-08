@@ -25,6 +25,8 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 import io.flutter.plugin.common.StandardMessageCodec;
 
+import static com.huawei.rtc.models.LogInfo.LogLevel.LOG_LEVEL_DEBUG;
+
 /**
  * 华为 RTC 引擎插件 tcEnginePlugin
  *
@@ -83,6 +85,16 @@ public class AgoraRtcEnginePlugin implements MethodCallHandler, EventChannel.Str
         return (mRegistrar.activity() != null) ? mRegistrar.activity() : mRegistrar.context();
     }
 
+    private static void setEngine(RtcEngine mRtcEngine) {
+        if (AgoraRtcEnginePlugin.mRtcEngine == null) {
+            AgoraRtcEnginePlugin.mRtcEngine = mRtcEngine;
+            LogInfo logInfo = new LogInfo();
+            logInfo.setLevel(LOG_LEVEL_DEBUG);
+            logInfo.setPath(RtcUtil.getLogPath());
+            RtcEngine.setLogParam(false, logInfo);
+        }
+    }
+
 
     @Override
     public void onMethodCall(MethodCall call, Result result) {
@@ -98,7 +110,7 @@ public class AgoraRtcEnginePlugin implements MethodCallHandler, EventChannel.Str
                 try {
                     String appId = call.argument("appId");
                     String domain = call.argument("domain");
-                    mRtcEngine = RtcEngine.create(context, domain, appId, mRtcEventHandler);
+                    setEngine(RtcEngine.create(context, domain, appId, mRtcEventHandler));
                     result.success(null);
                 } catch (Exception e) {
                     throw new RuntimeException("NEED TO check rtc sdk init fatal error\n");
@@ -106,8 +118,12 @@ public class AgoraRtcEnginePlugin implements MethodCallHandler, EventChannel.Str
             }
             break;
             case "destroy": {
-                RtcEngine.destroy();
-                result.success(null);
+                try {
+                    RtcEngine.destroy();
+                    result.success(null);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             break;
             case "joinRoom": {
@@ -135,11 +151,6 @@ public class AgoraRtcEnginePlugin implements MethodCallHandler, EventChannel.Str
                 int speakerModel = call.argument("speakerModel");
                 result.success(mRtcEngine.setSpeakerModel(RtcEnums.SpeakerModel.values()[speakerModel]));
                 break;
-
-//            case "createRenderer":
-//                SurfaceView surfaceView = mRtcEngine.createRenderer(context);
-//
-//                break;
             case "removeNativeView": {
                 int viewId = call.argument("viewId");
                 removeView(viewId);
@@ -151,6 +162,7 @@ public class AgoraRtcEnginePlugin implements MethodCallHandler, EventChannel.Str
                 SurfaceView localView = getView(localViewId);
                 int viewMode = call.argument("viewMode");
                 int setupLocalView = mRtcEngine.setupLocalView(localView, RtcEnums.ViewMode.values()[viewMode]);
+                Log.e(TAG, "onMethodCall: setupLocalView: ret: " + setupLocalView);
                 result.success(setupLocalView);
             }
             break;
@@ -162,6 +174,7 @@ public class AgoraRtcEnginePlugin implements MethodCallHandler, EventChannel.Str
                 int streamType = call.argument("streamType");
 
                 int setupRemoteView = mRtcEngine.setupRemoteView(view, RtcEnums.ViewMode.values()[viewMode], RtcEnums.StreamType.values()[streamType], userId);
+                Log.e(TAG, "onMethodCall: setupRemoteView: ret: " + setupRemoteView);
                 result.success(setupRemoteView);
             }
             break;
@@ -233,7 +246,7 @@ public class AgoraRtcEnginePlugin implements MethodCallHandler, EventChannel.Str
         @Override
         public void onUserJoined(String roomId, String userId, String nickName) {
             HashMap<String, Object> map = new HashMap<>();
-            map.put("uid", userId);
+            map.put("userId", userId);
             map.put("roomId", roomId);
             map.put("nickName", nickName);
             sendEvent("onUserJoined", map);

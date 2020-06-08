@@ -46,7 +46,9 @@ enum StreamType {
 }
 
 enum SpeakerModel {
+  //耳机
   AUDIO_EARPIECE,
+  //外放
   AUDIO_SPEAKER,
 }
 ///媒体类型

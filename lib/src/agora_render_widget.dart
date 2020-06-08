@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
 
@@ -28,7 +29,7 @@ class AgoraRenderWidget extends StatefulWidget {
         assert(mode != null),
         assert(local != null),
         assert(preview != null),
-        super(key: Key(uid.toString()));
+        super(key: Key(uid));
 
   @override
   State<StatefulWidget> createState() => _AgoraRenderWidgetState();
@@ -57,17 +58,17 @@ class _AgoraRenderWidgetState extends State<AgoraRenderWidget> {
   @override
   void didUpdateWidget(AgoraRenderWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-
-    if ((widget.uid != oldWidget.uid || widget.local != oldWidget.local) &&
+    log("widget: ${widget}, oldWidget: $oldWidget");
+    if ((widget.uid != oldWidget.uid && widget.local != oldWidget.local) &&
         _viewId != null) {
       _bindView();
       return;
     }
 
-    if (widget.mode != oldWidget.mode) {
-      _changeRenderMode();
-      return;
-    }
+//    if (widget.mode != oldWidget.mode) {
+//      _changeRenderMode();
+//      return;
+//    }
   }
 
   void _bindView() {

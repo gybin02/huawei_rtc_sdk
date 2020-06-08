@@ -1,9 +1,11 @@
 package io.agora.agorartcengine;
 
+import android.os.Environment;
+
 import com.huawei.rtc.models.LogInfo;
 import com.huawei.rtc.models.UserInfo;
-import com.huawei.rtc.utils.RtcEnums;
 
+import java.io.File;
 import java.util.Map;
 
 /**
@@ -12,7 +14,7 @@ import java.util.Map;
  * @author zhengxiaobin
  * @date 2020/6/5
  */
-public class RtcUtil {
+class RtcUtil {
 
     static UserInfo userInfoFromJson(Map<String, Object> json) {
         UserInfo userInfo = new UserInfo();
@@ -34,5 +36,9 @@ public class RtcUtil {
         return userInfo;
     }
 
+    public static String getLogPath(){
+        File path = Environment.getExternalStorageDirectory();
+        return path.getAbsolutePath()+"/rtcLog";
+    }
 
 }

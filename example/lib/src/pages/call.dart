@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import '../utils/settings.dart';
 
 class CallPage extends StatefulWidget {
@@ -23,13 +24,15 @@ class _CallPageState extends State<CallPage> {
   static final _users = <String>[];
   final _infoStrings = <String>[];
   bool muted = false;
+  bool mutedVideo = false;
+  bool isSpeaker = false;
 
   @override
   void dispose() {
     // clear users
     _users.clear();
-    // destroy sdk
     AgoraRtcEngine.leaveRoom();
+    // destroy sdk
 //    AgoraRtcEngine.destroy();
     super.dispose();
   }
@@ -79,31 +82,31 @@ class _CallPageState extends State<CallPage> {
       });
     };
 
-    AgoraRtcEngine.onJoinRoomSuccess = (
-      String room,
-      String uid,
-    ) {
-      log("onJoinRoomSuccess $room:$uid");
+    AgoraRtcEngine.onJoinRoomSuccess = (String roomId,
+        String uid,) {
+      log("onJoinRoomSuccess $roomId:$uid");
       setState(() {
-        final info = 'onJoinRoomSuccess: $room, uid: $uid';
+        final info = 'onJoinRoomSuccess: $roomId, uid: $uid';
         _infoStrings.add(info);
       });
     };
 
     AgoraRtcEngine.onLeaveRoom = (String roomId, String userId) {
-      setState(() {
-        _infoStrings.add('userId:$userId onLeaveRoom: room:$roomId');
-        _users.clear();
-      });
+      log('userId:$userId onLeaveRoom: room:$roomId');
+//      setState(() {
+//        _infoStrings.add('userId:$userId onLeaveRoom: room:$roomId');
+//        _users.clear();
+//      });
     };
 
     AgoraRtcEngine.onUserJoined =
         (String roomId, String userId, String nickName) {
       setState(() {
         var info =
-            "onUserJoined roomId: $roomId userId:$userId nickname:$nickName, widget.uid:$widget.userId";
+            "onUserJoined roomId: $roomId userId:$userId nickname:$nickName, widget.uid:${widget
+            .userId}";
         log(info);
-        if (widget.userId == userId) {
+        if (userId != null && widget.userId == userId) {
 //          widget.roleType == RoleType.ROLE_TYPE_PUBLISER
           return;
         }
@@ -124,7 +127,7 @@ class _CallPageState extends State<CallPage> {
         (String roomId, String userId, int width, int height) {
       setState(() {
         final info =
-            'room:$roomId firstRemoteVideo: user:$userId ${width}x $height';
+            'room:$roomId onFirstRemoteVideoDecoded: user:$userId ${width}x $height';
         _infoStrings.add(info);
       });
     };
@@ -161,32 +164,32 @@ class _CallPageState extends State<CallPage> {
       case 1:
         return Container(
             child: Column(
-          children: <Widget>[_videoView(views[0])],
-        ));
+              children: <Widget>[_videoView(views[0])],
+            ));
       case 2:
         return Container(
             child: Column(
-          children: <Widget>[
-            _expandedVideoRow([views[0]]),
-            _expandedVideoRow([views[1]])
-          ],
-        ));
+              children: <Widget>[
+                _expandedVideoRow([views[0]]),
+                _expandedVideoRow([views[1]])
+              ],
+            ));
       case 3:
         return Container(
             child: Column(
-          children: <Widget>[
-            _expandedVideoRow(views.sublist(0, 2)),
-            _expandedVideoRow(views.sublist(2, 3))
-          ],
-        ));
+              children: <Widget>[
+                _expandedVideoRow(views.sublist(0, 2)),
+                _expandedVideoRow(views.sublist(2, 3))
+              ],
+            ));
       case 4:
         return Container(
             child: Column(
-          children: <Widget>[
-            _expandedVideoRow(views.sublist(0, 2)),
-            _expandedVideoRow(views.sublist(2, 4))
-          ],
-        ));
+              children: <Widget>[
+                _expandedVideoRow(views.sublist(0, 2)),
+                _expandedVideoRow(views.sublist(2, 4))
+              ],
+            ));
       default:
     }
     return Container();
@@ -198,22 +201,14 @@ class _CallPageState extends State<CallPage> {
       alignment: Alignment.bottomCenter,
       padding: const EdgeInsets.symmetric(vertical: 48),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          RawMaterialButton(
-            onPressed: _onToggleMute,
-            child: Icon(
-              muted ? Icons.mic_off : Icons.mic,
-              color: muted ? Colors.white : Colors.blueAccent,
-              size: 20.0,
-            ),
-            shape: CircleBorder(),
-            elevation: 2.0,
-            fillColor: muted ? Colors.blueAccent : Colors.white,
-            padding: const EdgeInsets.all(12.0),
-          ),
+          _toggleBtn(_onToggleMute, muted, Icons.mic_off, Icons.mic),
+          _toggleBtn(
+              _toggleMuteVideo, mutedVideo, Icons.videocam_off, Icons.videocam),
           RawMaterialButton(
             onPressed: () => _onCallEnd(context),
+            constraints: BoxConstraints.tightFor(),
             child: Icon(
               Icons.call_end,
               color: Colors.white,
@@ -224,8 +219,11 @@ class _CallPageState extends State<CallPage> {
             fillColor: Colors.redAccent,
             padding: const EdgeInsets.all(15.0),
           ),
+          _toggleBtn(_toggleSpeakerModel, isSpeaker, Icons.volume_up,
+              Icons.volume_off),
           RawMaterialButton(
             onPressed: _onSwitchCamera,
+            constraints: BoxConstraints.tightFor(),
             child: Icon(
               Icons.switch_camera,
               color: Colors.blueAccent,
@@ -238,6 +236,23 @@ class _CallPageState extends State<CallPage> {
           )
         ],
       ),
+    );
+  }
+
+  Widget _toggleBtn(Function onPressed, bool value, IconData trueIcon,
+      IconData falseIcon) {
+    return RawMaterialButton(
+      onPressed: onPressed,
+      constraints: BoxConstraints.tightFor(),
+      child: Icon(
+        value ? trueIcon : falseIcon,
+        color: value ? Colors.white : Colors.blueAccent,
+        size: 20.0,
+      ),
+      shape: CircleBorder(),
+      elevation: 2.0,
+      fillColor: value ? Colors.blueAccent : Colors.white,
+      padding: const EdgeInsets.all(12.0),
     );
   }
 
@@ -295,11 +310,28 @@ class _CallPageState extends State<CallPage> {
     Navigator.pop(context);
   }
 
+  //本地禁音
   void _onToggleMute() {
     setState(() {
       muted = !muted;
     });
     AgoraRtcEngine.muteLocalAudio(muted);
+  }
+
+  //关闭本地视频
+  void _toggleMuteVideo() {
+    setState(() {
+      mutedVideo = !mutedVideo;
+    });
+    AgoraRtcEngine.muteLocalVideo(mutedVideo);
+  }
+
+  void _toggleSpeakerModel() {
+    setState(() {
+      isSpeaker = !isSpeaker;
+    });
+    AgoraRtcEngine.setSpeakerModel(
+        isSpeaker ? SpeakerModel.AUDIO_SPEAKER : SpeakerModel.AUDIO_EARPIECE);
   }
 
   void _onSwitchCamera() {
@@ -310,7 +342,7 @@ class _CallPageState extends State<CallPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Agora Flutter QuickStart'),
+        title: Text('Rtc Flutter QuickStart'),
       ),
       backgroundColor: Colors.black,
       body: Center(
