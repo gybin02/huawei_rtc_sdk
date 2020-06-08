@@ -37,7 +37,7 @@ class IndexState extends State<IndexPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Agora Flutter QuickStart'),
+        title: Text('Huawei RTC Flutter QuickStart'),
       ),
       body: Center(
         child: Container(
@@ -131,7 +131,7 @@ class IndexState extends State<IndexPage> {
       children: <Widget>[
         _buildRadio(RoleType.ROLE_TYPE_JOINER),
         Text("joiner"),
-        _buildRadio(RoleType.ROLE_TYPE_PUBLISER),
+        _buildRadio(RoleType.ROLE_TYPE_PUBLISHER),
         Text("publisher"),
         _buildRadio(RoleType.ROLE_TYPE_PLAYER),
         Text("player"),

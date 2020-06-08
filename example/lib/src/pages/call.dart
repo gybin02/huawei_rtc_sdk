@@ -30,7 +30,7 @@ class _CallPageState extends State<CallPage> {
     _users.clear();
     // destroy sdk
     AgoraRtcEngine.leaveRoom();
-    AgoraRtcEngine.destroy();
+//    AgoraRtcEngine.destroy();
     super.dispose();
   }
 
@@ -85,14 +85,14 @@ class _CallPageState extends State<CallPage> {
     ) {
       log("onJoinRoomSuccess $room:$uid");
       setState(() {
-        final info = 'onJoinChannel: $room, uid: $uid';
+        final info = 'onJoinRoomSuccess: $room, uid: $uid';
         _infoStrings.add(info);
       });
     };
 
     AgoraRtcEngine.onLeaveRoom = (String roomId, String userId) {
       setState(() {
-        _infoStrings.add('userId:$userId onLeaveChannel: room:$roomId');
+        _infoStrings.add('userId:$userId onLeaveRoom: room:$roomId');
         _users.clear();
       });
     };
@@ -100,17 +100,13 @@ class _CallPageState extends State<CallPage> {
     AgoraRtcEngine.onUserJoined =
         (String roomId, String userId, String nickName) {
       setState(() {
-        log("HwRtcDemo onUserJoined roomId:" +
-            roomId +
-            ", userId:" +
-            userId +
-            ", nickname:" +
-            nickName);
-        if (widget.userId == userId ||
-            widget.roleType == RoleType.ROLE_TYPE_PUBLISER) {
+        var info =
+            "onUserJoined roomId: $roomId userId:$userId nickname:$nickName, widget.uid:$widget.userId";
+        log(info);
+        if (widget.userId == userId) {
+//          widget.roleType == RoleType.ROLE_TYPE_PUBLISER
           return;
         }
-        final info = 'userJoined: $userId';
         _infoStrings.add(info);
         _users.add(userId);
       });
@@ -118,7 +114,7 @@ class _CallPageState extends State<CallPage> {
 
     AgoraRtcEngine.onUserOffline = (String roomId, String userId, int reason) {
       setState(() {
-        final info = 'userOffline: $userId';
+        final info = 'userOffline: $userId, roomId:$roomId';
         _infoStrings.add(info);
         _users.remove(userId);
       });
