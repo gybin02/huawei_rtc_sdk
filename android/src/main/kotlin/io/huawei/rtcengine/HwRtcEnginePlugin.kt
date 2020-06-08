@@ -1,4 +1,4 @@
-package io.agora.agorartcengine
+package io.huawei.rtcengine
 
 import android.content.Context
 import android.os.Handler
@@ -28,7 +28,7 @@ import java.util.*
  * @author zhengxiaobin
  * @date 2020/6/5
  */
-class AgoraRtcEnginePlugin private constructor(private val mRegistrar: Registrar) :
+class HwRtcEnginePlugin private constructor(private val mRegistrar: Registrar) :
     MethodCallHandler,
     EventChannel.StreamHandler {
     private val mRendererViews: HashMap<String, SurfaceView> = HashMap()
@@ -328,10 +328,10 @@ class AgoraRtcEnginePlugin private constructor(private val mRegistrar: Registrar
             val channel = MethodChannel(registrar.messenger(), "agora_rtc_engine")
             val eventChannel =
                 EventChannel(registrar.messenger(), "agora_rtc_engine_event_channel")
-            val plugin = AgoraRtcEnginePlugin(registrar)
+            val plugin = HwRtcEnginePlugin(registrar)
             channel.setMethodCallHandler(plugin)
             eventChannel.setStreamHandler(plugin)
-            val fac = AgoraRenderViewFactory(
+            val fac = RtcRenderViewFactory(
                 StandardMessageCodec.INSTANCE,
                 plugin
             )

@@ -13,5 +13,5 @@ dependencies:
 
 flutter:
   plugin:
-    androidPackage: io.agora.agorartcengine
-    pluginClass: AgoraRtcEnginePlugin
+    androidPackage: io.huawei.rtcengine
+    pluginClass: HwRtcEnginePlugin

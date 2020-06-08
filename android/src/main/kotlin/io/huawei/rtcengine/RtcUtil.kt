@@ -1,4 +1,4 @@
-package io.agora.agorartcengine
+package io.huawei.rtcengine
 
 import android.os.Environment
 import com.huawei.rtc.models.LogInfo

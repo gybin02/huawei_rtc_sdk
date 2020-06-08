@@ -1,4 +1,4 @@
-package io.agora.agorartcengine
+package io.huawei.rtcengine
 
 import android.view.SurfaceView
 import android.view.View
@@ -10,7 +10,7 @@ import io.flutter.plugin.platform.PlatformView
  * @author zhengxiaobin
  * @date 2020/6/5
  */
-class AgoraRendererView internal constructor(
+class RtcRendererView internal constructor(
     private val mSurfaceView: SurfaceView,
     private val viewId: Int
 ) :
