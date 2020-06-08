@@ -20,6 +20,8 @@ rootProject.allprojects {
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 28
@@ -34,6 +36,7 @@ android {
     }
     sourceSets {
         main {
+            java.srcDirs += 'src/main/kotlin'
             jniLibs.srcDirs = ['src/main/jniLibs']
         }
     }
@@ -41,6 +44,11 @@ android {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "androidx.core:core-ktx:+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
 //    implementation 'io.agora.rtc:full-sdk:2.9.1'
+}
+repositories {
+    mavenCentral()
 }
