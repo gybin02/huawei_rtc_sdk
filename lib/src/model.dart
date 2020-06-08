@@ -1,7 +1,3 @@
-import 'dart:ui';
-
-
-
 ///连接状态： https://support.huaweicloud.com/csdk-rtc/rtc_05_0005.html#rtc_05_0005__section1863519517324
 ///
 enum ConnChangeReason {
@@ -51,27 +47,34 @@ enum SpeakerModel {
   //外放
   AUDIO_SPEAKER,
 }
+
 ///媒体类型
 enum MediaType {
   ///只有音频流。
   MEDIA_TYPE_AUDIO,
+
   ///音频流+视频流。
   MEDIA_TYPE_AUDIO_VIDEO,
+
   ///数据流，暂不支持。
   MEDIA_TYPE_AUDIO_VIDEO_DATA,
 }
+
 ///角色
 ///https://support.huaweicloud.com/csdk-rtc/rtc_05_0009.html#rtc_05_0009__section181001014124014
 ///
 enum RoleType {
   ///双向流角色，例如主播加入。
   ROLE_TYPE_JOINER,
+
   ///发布流角色，例如广播
   ///
   ROLE_TYPE_PUBLISHER,
+
   ///接收流角色，例如观众
   ROLE_TYPE_PLAYER,
 }
+
 ///用户信息跟SDK的 UserInfo对应
 ///
 class UserInfo {
@@ -93,6 +96,7 @@ class UserInfo {
     };
   }
 }
+
 ///rtc 内部log配置参数
 ///
 class LogInfo {

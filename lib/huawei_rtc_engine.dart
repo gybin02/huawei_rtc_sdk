@@ -5,10 +5,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'src/base.dart';
+import 'src/model.dart';
 
-export 'src/agora_render_widget.dart';
-export 'src/base.dart';
+export 'src/rtc_render_widget.dart';
+export 'src/model.dart';
 
 class AgoraRtcEngine {
   static const MethodChannel _channel = const MethodChannel('agora_rtc_engine');

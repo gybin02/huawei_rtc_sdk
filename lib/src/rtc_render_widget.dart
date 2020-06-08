@@ -1,8 +1,9 @@
 import 'dart:developer';
-import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
 
-/// 视频或者通话界面Widget - This widget will automatically manage the native view.
+import '../huawei_rtc_engine.dart';
+
+/// 封装好的视频界面Widget - This widget will automatically manage the native view.
 ///
 /// Enables create native view with `uid` `mode` `local` and destroy native view automatically.
 ///

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
-import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:agora_rtc_engine/huawei_rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import '../utils/settings.dart';
