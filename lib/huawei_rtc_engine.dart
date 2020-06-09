@@ -10,7 +10,7 @@ import 'src/model.dart';
 export 'src/rtc_render_widget.dart';
 export 'src/model.dart';
 
-class AgoraRtcEngine {
+class HwRtcEngine {
   static const MethodChannel _channel = const MethodChannel('agora_rtc_engine');
   static const EventChannel _eventChannel =
       const EventChannel('agora_rtc_engine_event_channel');

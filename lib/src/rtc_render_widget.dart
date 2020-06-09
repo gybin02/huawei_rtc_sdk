@@ -7,7 +7,7 @@ import '../huawei_rtc_engine.dart';
 ///
 /// Enables create native view with `uid` `mode` `local` and destroy native view automatically.
 ///
-class AgoraRenderWidget extends StatefulWidget {
+class RtcRenderWidget extends StatefulWidget {
   // uid
   final String uid;
 
@@ -21,7 +21,7 @@ class AgoraRenderWidget extends StatefulWidget {
   /// render mode
   final ViewMode mode;
 
-  AgoraRenderWidget(
+  RtcRenderWidget(
     this.uid, {
     this.mode = ViewMode.VIEW_MODE_CROP,
     this.local = false,
@@ -33,10 +33,10 @@ class AgoraRenderWidget extends StatefulWidget {
         super(key: Key(uid));
 
   @override
-  State<StatefulWidget> createState() => _AgoraRenderWidgetState();
+  State<StatefulWidget> createState() => _RtcRenderWidgetState();
 }
 
-class _AgoraRenderWidgetState extends State<AgoraRenderWidget> {
+class _RtcRenderWidgetState extends State<RtcRenderWidget> {
   Widget _nativeView;
 
   int _viewId;
@@ -44,7 +44,8 @@ class _AgoraRenderWidgetState extends State<AgoraRenderWidget> {
   @override
   void initState() {
     super.initState();
-    _nativeView = AgoraRtcEngine.createNativeView((viewId) {
+    log("initState: ${widget.uid}");
+    _nativeView = HwRtcEngine.createNativeView((viewId) {
       _viewId = viewId;
       _bindView();
     });
@@ -52,14 +53,15 @@ class _AgoraRenderWidgetState extends State<AgoraRenderWidget> {
 
   @override
   void dispose() {
-    AgoraRtcEngine.removeNativeView(_viewId);
+    log("dispose: ${widget.uid},  viewId： $_viewId ");
+//    AgoraRtcEngine.removeNativeView(_viewId);
     super.dispose();
   }
 
   @override
-  void didUpdateWidget(AgoraRenderWidget oldWidget) {
+  void didUpdateWidget(RtcRenderWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    log("widget: ${widget}, oldWidget: $oldWidget");
+    log("widget: ${widget.uid}, oldWidget: $oldWidget");
     if ((widget.uid != oldWidget.uid && widget.local != oldWidget.local) &&
         _viewId != null) {
       _bindView();
@@ -74,10 +76,12 @@ class _AgoraRenderWidgetState extends State<AgoraRenderWidget> {
 
   void _bindView() {
     if (widget.local) {
-      AgoraRtcEngine.setupLocalView(_viewId, widget.mode);
+      Text("Local");
+//      AgoraRtcEngine.setupLocalView(_viewId, widget.mode);
     } else {
-      AgoraRtcEngine.setupRemoteView(
-          _viewId, widget.mode, StreamType.STREAM_TYPE_SD, widget.uid);
+      Text("remote");
+//      AgoraRtcEngine.setupRemoteView(
+//          _viewId, widget.mode, StreamType.STREAM_TYPE_SD, widget.uid);
     }
   }
 

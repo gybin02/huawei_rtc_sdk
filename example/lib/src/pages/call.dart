@@ -31,9 +31,9 @@ class _CallPageState extends State<CallPage> {
   void dispose() {
     // clear users
     _users.clear();
-    AgoraRtcEngine.leaveRoom();
+    HwRtcEngine.leaveRoom();
     // destroy sdk
-//    AgoraRtcEngine.destroy();
+//    HwRtcEngine.destroy();
     super.dispose();
   }
 
@@ -54,35 +54,35 @@ class _CallPageState extends State<CallPage> {
       return;
     }
 
-    await _initAgoraRtcEngine();
+    await _initHwRtcEngine();
     _addAgoraEventHandlers();
-//    await AgoraRtcEngine.setParameters(
+//    await HwRtcEngine.setParameters(
 //        '''{\"che.video.lowBitRateStreamParameter\":{\"width\":320,\"height\":180,\"frameRate\":15,\"bitRate\":140}}''');
     UserInfo userInfo = new UserInfo();
     userInfo.userId = widget.userId;
     userInfo.userName = widget.userId;
     userInfo.role = widget.roleType.index;
-    var ret = await AgoraRtcEngine.joinRoom(
+    var ret = await HwRtcEngine.joinRoom(
         userInfo, widget.roomId, MediaType.MEDIA_TYPE_AUDIO_VIDEO);
     log("joinRoom ret: $ret");
 //    Channel(null, widget.channelName, null, 0);
   }
 
   /// Create agora sdk instance and initialize
-  Future<void> _initAgoraRtcEngine() async {
-    await AgoraRtcEngine.create(APP_DOMAIN, APP_ID);
+  Future<void> _initHwRtcEngine() async {
+    await HwRtcEngine.create(APP_DOMAIN, APP_ID);
   }
 
   /// Add agora event handlers
   void _addAgoraEventHandlers() {
-    AgoraRtcEngine.onError = (int error, String msg) {
+    HwRtcEngine.onError = (int error, String msg) {
       setState(() {
         final info = 'onError: $error: $msg';
         _infoStrings.add(info);
       });
     };
 
-    AgoraRtcEngine.onJoinRoomSuccess = (String roomId,
+    HwRtcEngine.onJoinRoomSuccess = (String roomId,
         String uid,) {
       log("onJoinRoomSuccess $roomId:$uid");
       setState(() {
@@ -91,7 +91,7 @@ class _CallPageState extends State<CallPage> {
       });
     };
 
-    AgoraRtcEngine.onLeaveRoom = (String roomId, String userId) {
+    HwRtcEngine.onLeaveRoom = (String roomId, String userId) {
       log('userId:$userId onLeaveRoom: room:$roomId');
 //      setState(() {
 //        _infoStrings.add('userId:$userId onLeaveRoom: room:$roomId');
@@ -99,7 +99,7 @@ class _CallPageState extends State<CallPage> {
 //      });
     };
 
-    AgoraRtcEngine.onUserJoined =
+    HwRtcEngine.onUserJoined =
         (String roomId, String userId, String nickName) {
       setState(() {
         var info =
@@ -115,7 +115,7 @@ class _CallPageState extends State<CallPage> {
       });
     };
 
-    AgoraRtcEngine.onUserOffline = (String roomId, String userId, int reason) {
+    HwRtcEngine.onUserOffline = (String roomId, String userId, int reason) {
       setState(() {
         final info = 'userOffline: $userId, roomId:$roomId';
         _infoStrings.add(info);
@@ -123,7 +123,7 @@ class _CallPageState extends State<CallPage> {
       });
     };
 
-    AgoraRtcEngine.onFirstRemoteVideoDecoded =
+    HwRtcEngine.onFirstRemoteVideoDecoded =
         (String roomId, String userId, int width, int height) {
       setState(() {
         final info =
@@ -135,10 +135,10 @@ class _CallPageState extends State<CallPage> {
 
   /// Helper function to get list of native views
   List<Widget> _getRenderViews() {
-    final List<AgoraRenderWidget> list = [
-      AgoraRenderWidget(widget.userId, local: true, preview: true),
+    final List<RtcRenderWidget> list = [
+      RtcRenderWidget(widget.userId, local: true, preview: true),
     ];
-    _users.forEach((String uid) => list.add(AgoraRenderWidget(uid)));
+    _users.forEach((String uid) => list.add(RtcRenderWidget(uid)));
     return list;
   }
 
@@ -315,7 +315,7 @@ class _CallPageState extends State<CallPage> {
     setState(() {
       muted = !muted;
     });
-    AgoraRtcEngine.muteLocalAudio(muted);
+    HwRtcEngine.muteLocalAudio(muted);
   }
 
   //关闭本地视频
@@ -323,19 +323,19 @@ class _CallPageState extends State<CallPage> {
     setState(() {
       mutedVideo = !mutedVideo;
     });
-    AgoraRtcEngine.muteLocalVideo(mutedVideo);
+    HwRtcEngine.muteLocalVideo(mutedVideo);
   }
 
   void _toggleSpeakerModel() {
     setState(() {
       isSpeaker = !isSpeaker;
     });
-    AgoraRtcEngine.setSpeakerModel(
+    HwRtcEngine.setSpeakerModel(
         isSpeaker ? SpeakerModel.AUDIO_SPEAKER : SpeakerModel.AUDIO_EARPIECE);
   }
 
   void _onSwitchCamera() {
-    AgoraRtcEngine.switchCamera();
+    HwRtcEngine.switchCamera();
   }
 
   @override
