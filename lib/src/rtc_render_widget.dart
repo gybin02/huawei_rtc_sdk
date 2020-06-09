@@ -5,7 +5,23 @@ import '../huawei_rtc_engine.dart';
 
 /// 封装好的视频界面Widget - This widget will automatically manage the native view.
 ///
-/// Enables create native view with `uid` `mode` `local` and destroy native view automatically.
+/// 注意：dispose 中会销毁NativeView。因此上层构建布局的时候要注意dispose的调用，避免触发dispose。
+///
+/// 这种布局会导致dispose
+///witch (views.length) {
+//      case 1:
+//        return Container(
+//            child: Column(
+//              children: <Widget>[_videoView(views[0])],
+//            ));
+//      case 2:
+//        return Container(
+//            child: Column(
+//              children: <Widget>[
+//                _expandedVideoRow([views[0]]),
+//                _expandedVideoRow([views[1]])
+//              ],
+//            ));
 ///
 class RtcRenderWidget extends StatefulWidget {
   /// uid

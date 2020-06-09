@@ -32,7 +32,7 @@ class _CallPageState extends State<CallPage> {
   void dispose() {
     // clear users
 //    _users.clear();
-//    HwRtcEngine.leaveRoom();
+    HwRtcEngine.leaveRoom();
     // destroy sdk
 //    HwRtcEngine.destroy();
     super.dispose();
@@ -41,7 +41,7 @@ class _CallPageState extends State<CallPage> {
   @override
   void initState() {
     super.initState();
-//    initialize();
+    initialize();
     _users.add(widget.userId);
   }
 
@@ -133,11 +133,17 @@ class _CallPageState extends State<CallPage> {
 
   /// Helper function to get list of native views
   List<Widget> _getRenderViews() {
-//    final List<TestWidget> list = [
-//      TestWidget(widget.userId, local: true),
-//    ];
-    List<TestWidget> list = [];
-    _users.forEach((String uid) => list.add(TestWidget(uid)));
+    List<RtcRenderWidget> list = [];
+    _users.forEach((String uid) {
+      if (uid == widget.userId) {
+        list.add(RtcRenderWidget(
+          uid,
+          local: true,
+        ));
+      } else {
+        list.add(RtcRenderWidget(uid));
+      }
+    });
     return list;
   }
 
@@ -186,44 +192,7 @@ class _CallPageState extends State<CallPage> {
         )
       ],
     );
-
-//    switch (views.length) {
-//      case 1:
-//        return Column(
-//          children: <Widget>[expanded(views[0])],
-//        );
-//      case 2:
-//        return Column(
-//          children: <Widget>[
-//            _expandedVideoRow([views[0]]),
-//            _expandedVideoRow([views[1]])
-//          ],
-//        );
-//      case 3:
-//        return Column(
-//          children: <Widget>[
-//            _expandedVideoRow(views.sublist(0, 2)),
-//            _expandedVideoRow(views.sublist(2, 3))
-//          ],
-//        );
-//      case 4:
-//        return Column(
-//          children: <Widget>[
-//            _expandedVideoRow(views.sublist(0, 2)),
-//            _expandedVideoRow(views.sublist(2, 4))
-//          ],
-//        );
-//      default:
-//    }
-//    return Container();
   }
-
-//  Widget buildRow(List<Widget> views) {
-//    switch (views.length)
-//    if (views.length == 1) {
-//      return _expandedVideoRow(views[0]);
-//    }
-//  }
 
   /// Toolbar layout
   Widget _toolbar() {
@@ -345,13 +314,16 @@ class _CallPageState extends State<CallPage> {
   //本地禁音
   void _onToggleMute() {
     setState(() {
+      muted = !muted;
+    });
+    HwRtcEngine.muteLocalAudio(muted);
+  }
+
+  void testAdd(){
+    setState(() {
       ++_temp;
       _users.add("_temp $_temp");
     });
-//    setState(() {
-//      muted = !muted;
-//    });
-//    HwRtcEngine.muteLocalAudio(muted);
   }
 
   //关闭本地视频
@@ -385,7 +357,7 @@ class _CallPageState extends State<CallPage> {
         child: Stack(
           children: <Widget>[
             _viewRows(),
-//            _panel(),
+            _panel(),
             _toolbar(),
           ],
         ),
