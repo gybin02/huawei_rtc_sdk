@@ -67,5 +67,7 @@ onWarning
 ### iOS 注意事项
 
 
-### Release crash
+### TODO
+1. 调用 engine.destroy()会触发：F/eitu.rtcexampl( 2224): indirect_reference_table.cc:61] JNI ERROR (app bug): accessed deleted Global 0x2856
+
 
