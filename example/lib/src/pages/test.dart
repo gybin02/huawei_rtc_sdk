@@ -3,7 +3,8 @@ import 'package:agora_rtc_engine_example/src/widget/test_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:agora_rtc_engine/huawei_rtc_engine.dart';
 
-
+///测试页面
+///
 class TestPage extends StatefulWidget {
   @override
   _TestPageState createState() => _TestPageState();

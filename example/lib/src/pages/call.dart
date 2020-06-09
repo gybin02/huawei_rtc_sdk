@@ -5,7 +5,8 @@ import 'package:agora_rtc_engine_example/src/widget/test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import '../utils/settings.dart';
-
+///通话页面
+///
 class CallPage extends StatefulWidget {
   /// non-modifiable channel name of the page
   final String roomId;

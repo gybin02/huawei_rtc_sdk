@@ -1,8 +1,8 @@
 name: agora_rtc_engine
-description: Flutter plugin for Agora Video SDK.
-version: 1.0.5
-author: Agora.io
-homepage: https://www.agora.io
+description: Flutter plugin for Huawei RTC SDK.
+version: 0.0.1
+author: zhengxiaobin
+homepage: http://techgit.meitu.com/flutter/huawei_rtc
 
 environment:
   sdk: ">=2.0.0 <3.0.0"

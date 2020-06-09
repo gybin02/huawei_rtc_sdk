@@ -10,24 +10,61 @@
 - 直播连麦互动 主播加入频道时，即可实现连麦互动，观众可在直播的任一时刻切换为主播，与频道内现有主播进行连麦互动。
 
 ## 使用
+### 1. 引入库：
+```
+agora_rtc_engine_example
+git: http://techgit.meitu.com/flutter/huawei_rtc
+```
+### 2.初始化
+```dart
+//初始化引擎
+await HwRtcEngine.create(APP_DOMAIN, APP_ID);
+//构建视频布局：
+RtcRenderWidget(uid);
 
-
-### Android
-
-打开 *AndroidManifest.xml* file，加入需要的权限
-
-```xml
-..
-<uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-<uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.RECORD_AUDIO" />
-<uses-permission android:name="android.permission.CAMERA" />
-<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+//done
 
 ```
 
-### iOS
+
+### 3. 构建通话界面
+参考： example里面的 call.dart 页面
+
+### 4. 更多功能
+```yaml
+create
+createNativeView
+destroy
+joinRoom
+leaveRoom
+logUpload
+muteLocalAudio
+muteLocalVideo
+removeNativeView
+setLogParam
+setSpeakerModel
+setupLocalView
+setupRemoteView
+switchCamera
+
+//通知回调
+onAgreedStreamAvailable
+onConnectionStateChange
+onError
+onFirstRemoteVideoDecoded
+onJoinRoomSuccess
+onLeaveRoom
+onLogUploadProgress
+onLogUploadResult
+onUserJoined
+onUserOffline
+onWarning
+
+```
+
+### Android 注意事项
+
+### iOS 注意事项
 
 
 ### Release crash

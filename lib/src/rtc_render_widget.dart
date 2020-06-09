@@ -50,7 +50,7 @@ class _RtcRenderWidgetState extends State<RtcRenderWidget> {
   @override
   void initState() {
     super.initState();
-    log("initState: ${widget.uid}");
+//    log("initState: ${widget.uid}");
     _nativeView = HwRtcEngine.createNativeView((viewId) {
       _viewId = viewId;
       _bindView();
@@ -59,21 +59,10 @@ class _RtcRenderWidgetState extends State<RtcRenderWidget> {
 
   @override
   void dispose() {
-    log("dispose: ${widget.uid},  viewId： $_viewId ");
+//    log("dispose: ${widget.uid},  viewId： $_viewId ");
     HwRtcEngine.removeNativeView(_viewId);
     super.dispose();
   }
-
-//  @override
-//  void didUpdateWidget(RtcRenderWidget oldWidget) {
-//    super.didUpdateWidget(oldWidget);
-//    log("didUpdateWidget uid: ${widget.uid}, oldWidget: $oldWidget");
-//    if ((widget.uid != oldWidget.uid && widget.local != oldWidget.local) &&
-//        _viewId != null) {
-//      _bindView();
-//      return;
-//    }
-//  }
 
   void _bindView() {
     if (widget.local) {
