@@ -35,6 +35,7 @@ class HwRtcEnginePlugin private constructor(private val mRegistrar: Registrar) :
     private val mEventHandler =
         Handler(Looper.getMainLooper())
     private var sink: EventSink? = null
+
     fun addView(view: SurfaceView, id: Int) {
         mRendererViews["" + id] = view
     }
@@ -65,14 +66,7 @@ class HwRtcEnginePlugin private constructor(private val mRegistrar: Registrar) :
                 try {
                     val appId = call.argument<String>("appId")
                     val domain = call.argument<String>("domain")
-                    setEngine(
-                        RtcEngine.create(
-                            context,
-                            domain,
-                            appId,
-                            mRtcEventHandler
-                        )
-                    )
+                    setEngine(RtcEngine.create(context, domain, appId, mRtcEventHandler))
                     result.success(null)
                 } catch (e: Exception) {
                     throw RuntimeException("NEED TO check rtc sdk init fatal error\n")
@@ -301,22 +295,20 @@ class HwRtcEnginePlugin private constructor(private val mRegistrar: Registrar) :
             "sendEvent: $eventName  params: $map"
         )
         mEventHandler.post {
-            if (sink != null) {
-                sink!!.success(map)
-            }
+            sink?.success(map)
         }
     }
 
-    override fun onListen(o: Any, eventSink: EventSink) {
+    override fun onListen(arguments: Any?, eventSink: EventSink?) {
         sink = eventSink
     }
 
-    override fun onCancel(o: Any) {
+    override fun onCancel(arguments: Any?) {
         sink = null
     }
 
     companion object {
-        private const val TAG = "AgoraRtcEnginePlugin"
+        private const val TAG = "HwRtcEnginePlugin"
         var rtcEngine: RtcEngine? = null
             private set
 

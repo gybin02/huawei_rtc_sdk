@@ -1,33 +1,29 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
-
-import '../huawei_rtc_engine.dart';
+import 'package:agora_rtc_engine/huawei_rtc_engine.dart';
 
 /// 封装好的视频界面Widget - This widget will automatically manage the native view.
 ///
 /// Enables create native view with `uid` `mode` `local` and destroy native view automatically.
 ///
-class RtcRenderWidget extends StatefulWidget {
+class TestRenderWidget extends StatefulWidget {
   /// uid
   final String uid;
 
   /// local flag
   final bool local;
 
-  /// render mode
-  final ViewMode mode;
-
-  RtcRenderWidget(this.uid, {
+  TestRenderWidget(
+    this.uid, {
     Key key,
-    this.mode = ViewMode.VIEW_MODE_PAD,
     this.local = false,
   });
 
   @override
-  State<StatefulWidget> createState() => _RtcRenderWidgetState();
+  State<StatefulWidget> createState() => _TestRenderWidgetState();
 }
 
-class _RtcRenderWidgetState extends State<RtcRenderWidget> {
+class _TestRenderWidgetState extends State<TestRenderWidget> {
   Widget _nativeView;
   int _viewId;
 
@@ -35,16 +31,19 @@ class _RtcRenderWidgetState extends State<RtcRenderWidget> {
   void initState() {
     super.initState();
     log("initState: ${widget.uid}");
-    _nativeView = HwRtcEngine.createNativeView((viewId) {
+    _nativeView =
+
+//        Text("uid: ${widget.uid}");
+        HwRtcEngine.createNativeView((viewId) {
       _viewId = viewId;
-      _bindView();
+//      _bindView();
     });
   }
 
   @override
   void dispose() {
     log("dispose: ${widget.uid},  viewId： $_viewId ");
-    HwRtcEngine.removeNativeView(_viewId);
+//    HwRtcEngine.removeNativeView(_viewId);
     super.dispose();
   }
 
@@ -59,14 +58,14 @@ class _RtcRenderWidgetState extends State<RtcRenderWidget> {
 //    }
 //  }
 
-  void _bindView() {
-    if (widget.local) {
-      HwRtcEngine.setupLocalView(_viewId, widget.mode);
-    } else {
-      HwRtcEngine.setupRemoteView(
-          _viewId, widget.mode, StreamType.STREAM_TYPE_SD, widget.uid);
-    }
-  }
+//  void _bindView() {
+//    if (widget.local) {
+//      HwRtcEngine.setupLocalView(_viewId, widget.mode);
+//    } else {
+//      HwRtcEngine.setupRemoteView(
+//          _viewId, widget.mode, StreamType.STREAM_TYPE_SD, widget.uid);
+//    }
+//  }
 
   @override
   Widget build(BuildContext context) => _nativeView;

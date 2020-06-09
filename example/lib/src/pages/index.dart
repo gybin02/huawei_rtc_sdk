@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:agora_rtc_engine_example/src/pages/test.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import './call.dart';
@@ -83,7 +84,17 @@ class IndexState extends State<IndexPage> {
                   ],
                 ),
               ),
-
+              RaisedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TestPage(),
+                    ),
+                  );
+                },
+                child: Text("点击测试"),
+              )
             ],
           ),
         ),

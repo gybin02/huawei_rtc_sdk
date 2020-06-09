@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:agora_rtc_engine/huawei_rtc_engine.dart';
+import 'package:agora_rtc_engine_example/src/widget/test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import '../utils/settings.dart';
@@ -21,7 +22,7 @@ class CallPage extends StatefulWidget {
 }
 
 class _CallPageState extends State<CallPage> {
-  static final _users = <String>[];
+  final _users = <String>[];
   final _infoStrings = <String>[];
   bool muted = false;
   bool mutedVideo = false;
@@ -30,8 +31,8 @@ class _CallPageState extends State<CallPage> {
   @override
   void dispose() {
     // clear users
-    _users.clear();
-    HwRtcEngine.leaveRoom();
+//    _users.clear();
+//    HwRtcEngine.leaveRoom();
     // destroy sdk
 //    HwRtcEngine.destroy();
     super.dispose();
@@ -40,7 +41,8 @@ class _CallPageState extends State<CallPage> {
   @override
   void initState() {
     super.initState();
-    initialize();
+//    initialize();
+    _users.add(widget.userId);
   }
 
   Future<void> initialize() async {
@@ -55,9 +57,7 @@ class _CallPageState extends State<CallPage> {
     }
 
     await _initHwRtcEngine();
-    _addAgoraEventHandlers();
-//    await HwRtcEngine.setParameters(
-//        '''{\"che.video.lowBitRateStreamParameter\":{\"width\":320,\"height\":180,\"frameRate\":15,\"bitRate\":140}}''');
+    _addEventHandlers();
     UserInfo userInfo = new UserInfo();
     userInfo.userId = widget.userId;
     userInfo.userName = widget.userId;
@@ -65,7 +65,6 @@ class _CallPageState extends State<CallPage> {
     var ret = await HwRtcEngine.joinRoom(
         userInfo, widget.roomId, MediaType.MEDIA_TYPE_AUDIO_VIDEO);
     log("joinRoom ret: $ret");
-//    Channel(null, widget.channelName, null, 0);
   }
 
   /// Create agora sdk instance and initialize
@@ -74,7 +73,7 @@ class _CallPageState extends State<CallPage> {
   }
 
   /// Add agora event handlers
-  void _addAgoraEventHandlers() {
+  void _addEventHandlers() {
     HwRtcEngine.onError = (int error, String msg) {
       setState(() {
         final info = 'onError: $error: $msg';
@@ -82,8 +81,10 @@ class _CallPageState extends State<CallPage> {
       });
     };
 
-    HwRtcEngine.onJoinRoomSuccess = (String roomId,
-        String uid,) {
+    HwRtcEngine.onJoinRoomSuccess = (
+      String roomId,
+      String uid,
+    ) {
       log("onJoinRoomSuccess $roomId:$uid");
       setState(() {
         final info = 'onJoinRoomSuccess: $roomId, uid: $uid';
@@ -99,13 +100,10 @@ class _CallPageState extends State<CallPage> {
 //      });
     };
 
-    HwRtcEngine.onUserJoined =
-        (String roomId, String userId, String nickName) {
+    HwRtcEngine.onUserJoined = (String roomId, String userId, String nickName) {
       setState(() {
         var info =
-            "onUserJoined roomId: $roomId userId:$userId nickname:$nickName, widget.uid:${widget
-            .userId}";
-        log(info);
+            "onUserJoined roomId: $roomId userId:$userId nickname:$nickName, widget.uid:${widget.userId}";
         if (userId != null && widget.userId == userId) {
 //          widget.roleType == RoleType.ROLE_TYPE_PUBLISER
           return;
@@ -135,21 +133,19 @@ class _CallPageState extends State<CallPage> {
 
   /// Helper function to get list of native views
   List<Widget> _getRenderViews() {
-    final List<RtcRenderWidget> list = [
-      RtcRenderWidget(widget.userId, local: true, preview: true),
-    ];
-    _users.forEach((String uid) => list.add(RtcRenderWidget(uid)));
+//    final List<TestWidget> list = [
+//      TestWidget(widget.userId, local: true),
+//    ];
+    List<TestWidget> list = [];
+    _users.forEach((String uid) => list.add(TestWidget(uid)));
     return list;
-  }
-
-  /// Video view wrapper
-  Widget _videoView(view) {
-    return Expanded(child: Container(child: view));
   }
 
   /// Video view row wrapper
   Widget _expandedVideoRow(List<Widget> views) {
-    final wrappedViews = views.map<Widget>(_videoView).toList();
+    final wrappedViews = views.map<Widget>((view) {
+      return expanded(view);
+    }).toList();
     return Expanded(
       child: Row(
         children: wrappedViews,
@@ -157,43 +153,77 @@ class _CallPageState extends State<CallPage> {
     );
   }
 
+  Expanded expanded(Widget view) {
+    return Expanded(
+      flex: view == null ? 0 : 1,
+      child: view == null ? Container() : view,
+    );
+  }
+
   /// Video layout wrapper
   Widget _viewRows() {
     final views = _getRenderViews();
-    switch (views.length) {
-      case 1:
-        return Container(
-            child: Column(
-              children: <Widget>[_videoView(views[0])],
-            ));
-      case 2:
-        return Container(
-            child: Column(
-              children: <Widget>[
-                _expandedVideoRow([views[0]]),
-                _expandedVideoRow([views[1]])
-              ],
-            ));
-      case 3:
-        return Container(
-            child: Column(
-              children: <Widget>[
-                _expandedVideoRow(views.sublist(0, 2)),
-                _expandedVideoRow(views.sublist(2, 3))
-              ],
-            ));
-      case 4:
-        return Container(
-            child: Column(
-              children: <Widget>[
-                _expandedVideoRow(views.sublist(0, 2)),
-                _expandedVideoRow(views.sublist(2, 4))
-              ],
-            ));
-      default:
-    }
-    return Container();
+//    return Column(children: views,);
+    var length = views.length;
+    return Column(
+      children: <Widget>[
+        Expanded(
+          child: Row(
+            children: <Widget>[
+              expanded(views[0]),
+              expanded(length > 1 ? views[1] : null),
+            ],
+          ),
+        ),
+        Expanded(
+          flex: length > 2 ? 1 : 0,
+          child: Row(
+            children: <Widget>[
+              expanded(length > 2 ? views[2] : null),
+              expanded(length > 3 ? views[3] : null),
+            ],
+          ),
+        )
+      ],
+    );
+
+//    switch (views.length) {
+//      case 1:
+//        return Column(
+//          children: <Widget>[expanded(views[0])],
+//        );
+//      case 2:
+//        return Column(
+//          children: <Widget>[
+//            _expandedVideoRow([views[0]]),
+//            _expandedVideoRow([views[1]])
+//          ],
+//        );
+//      case 3:
+//        return Column(
+//          children: <Widget>[
+//            _expandedVideoRow(views.sublist(0, 2)),
+//            _expandedVideoRow(views.sublist(2, 3))
+//          ],
+//        );
+//      case 4:
+//        return Column(
+//          children: <Widget>[
+//            _expandedVideoRow(views.sublist(0, 2)),
+//            _expandedVideoRow(views.sublist(2, 4))
+//          ],
+//        );
+//      default:
+//    }
+//    return Container();
   }
+
+//  Widget buildRow(List<Widget> views) {
+//    switch (views.length)
+//    if (views.length == 1) {
+//      return _expandedVideoRow(views[0]);
+//    }
+//  }
 
   /// Toolbar layout
   Widget _toolbar() {
@@ -239,8 +269,8 @@ class _CallPageState extends State<CallPage> {
     );
   }
 
-  Widget _toggleBtn(Function onPressed, bool value, IconData trueIcon,
-      IconData falseIcon) {
+  Widget _toggleBtn(
+      Function onPressed, bool value, IconData trueIcon, IconData falseIcon) {
     return RawMaterialButton(
       onPressed: onPressed,
       constraints: BoxConstraints.tightFor(),
@@ -310,12 +340,18 @@ class _CallPageState extends State<CallPage> {
     Navigator.pop(context);
   }
 
+  int _temp = 0;
+
   //本地禁音
   void _onToggleMute() {
     setState(() {
-      muted = !muted;
+      ++_temp;
+      _users.add("_temp $_temp");
     });
-    HwRtcEngine.muteLocalAudio(muted);
+//    setState(() {
+//      muted = !muted;
+//    });
+//    HwRtcEngine.muteLocalAudio(muted);
   }
 
   //关闭本地视频
@@ -349,7 +385,7 @@ class _CallPageState extends State<CallPage> {
         child: Stack(
           children: <Widget>[
             _viewRows(),
-            _panel(),
+//            _panel(),
             _toolbar(),
           ],
         ),
