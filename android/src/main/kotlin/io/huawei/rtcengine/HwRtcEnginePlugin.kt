@@ -31,9 +31,9 @@ import java.util.*
 class HwRtcEnginePlugin private constructor(private val mRegistrar: Registrar) :
     MethodCallHandler,
     EventChannel.StreamHandler {
+
     private val mRendererViews: HashMap<String, SurfaceView> = HashMap()
-    private val mEventHandler =
-        Handler(Looper.getMainLooper())
+    private val mEventHandler = Handler(Looper.getMainLooper())
     private var sink: EventSink? = null
 
     fun addView(view: SurfaceView, id: Int) {
