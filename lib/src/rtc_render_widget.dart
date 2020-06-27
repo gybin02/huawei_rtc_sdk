@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../huawei_rtc_engine.dart';
 
-/// 封装好的视频界面Widget - This widget will automatically manage the native view.
+/// 封装好的视频通话界面Widget - This widget will automatically manage the native view.
 ///
 /// 注意：dispose 中会销毁NativeView。因此上层构建布局的时候要注意dispose的调用，避免触发dispose。
 ///

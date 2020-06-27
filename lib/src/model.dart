@@ -30,21 +30,28 @@ enum ConnStateTypes {
   RTC_CONNE_STATE_FAILED,
 }
 
+///视频画面类型
 enum ViewMode {
+  ///黑边填充
   VIEW_MODE_PAD,
   VIEW_MODE_CROP,
   VIEW_MODE_ADAPT,
 }
 
+///视频流类型
 enum StreamType {
+  ///标清
   STREAM_TYPE_SD,
+
+  ///高清
   STREAM_TYPE_HD,
 }
 
 enum SpeakerModel {
-  //耳机
+  ///耳机
   AUDIO_EARPIECE,
-  //外放
+
+  ///外放
   AUDIO_SPEAKER,
 }
 

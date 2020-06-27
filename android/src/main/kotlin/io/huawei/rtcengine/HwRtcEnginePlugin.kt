@@ -317,9 +317,9 @@ class HwRtcEnginePlugin private constructor(private val mRegistrar: Registrar) :
          */
         @JvmStatic
         fun registerWith(registrar: Registrar) {
-            val channel = MethodChannel(registrar.messenger(), "agora_rtc_engine")
+            val channel = MethodChannel(registrar.messenger(), "huawei_rtc_engine")
             val eventChannel =
-                EventChannel(registrar.messenger(), "agora_rtc_engine_event_channel")
+                EventChannel(registrar.messenger(), "huawei_rtc_engine_event_channel")
             val plugin = HwRtcEnginePlugin(registrar)
             channel.setMethodCallHandler(plugin)
             eventChannel.setStreamHandler(plugin)
@@ -327,7 +327,7 @@ class HwRtcEnginePlugin private constructor(private val mRegistrar: Registrar) :
                 StandardMessageCodec.INSTANCE,
                 plugin
             )
-            registrar.platformViewRegistry().registerViewFactory("AgoraRendererView", fac)
+            registrar.platformViewRegistry().registerViewFactory("HuaweiRendererView", fac)
         }
 
         private fun setEngine(mRtcEngine: RtcEngine) {

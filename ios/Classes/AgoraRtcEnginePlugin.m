@@ -80,10 +80,10 @@
 
 + (void)registerWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar {
     FlutterMethodChannel *channel = [FlutterMethodChannel
-            methodChannelWithName:@"agora_rtc_engine"
+            methodChannelWithName:@"Huawei_rtc_engine"
                   binaryMessenger:[registrar messenger]];
     FlutterEventChannel *eventChannel = [FlutterEventChannel
-            eventChannelWithName:@"agora_rtc_engine_event_channel"
+            eventChannelWithName:@"Huawei_rtc_engine_event_channel"
                  binaryMessenger:registrar.messenger];
     AgoraRtcEnginePlugin *instance = [[AgoraRtcEnginePlugin alloc] init];
     instance.methodChannel = channel;
@@ -91,7 +91,7 @@
     [registrar addMethodCallDelegate:instance channel:channel];
 
     AgoraRenderViewFactory *fac = [[AgoraRenderViewFactory alloc] init];
-    [registrar registerViewFactory:fac withId:@"AgoraRendererView"];
+    [registrar registerViewFactory:fac withId:@"HuaweiRendererView"];
 }
 
 - (UIColor *)UIColorFromRGB:(NSUInteger)rgbValue {

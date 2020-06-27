@@ -10,24 +10,25 @@ import 'src/model.dart';
 export 'src/rtc_render_widget.dart';
 export 'src/model.dart';
 
+///华为RTC引擎库
 class HwRtcEngine {
-  static const MethodChannel _channel = const MethodChannel('agora_rtc_engine');
+  static const MethodChannel _channel =
+      const MethodChannel('huawei_rtc_engine');
   static const EventChannel _eventChannel =
-      const EventChannel('agora_rtc_engine_event_channel');
+      const EventChannel('huawei_rtc_engine_event_channel');
 
   static StreamSubscription<dynamic> _sink;
 
-  // Core Methods
+  /// Core Methods
   /// Creates an RtcEngine instance.
   ///
-  /// The Agora SDK only supports one RtcEngine instance at a time, therefore the app should create one RtcEngine object only.
-  /// Only users with the same App ID can join the same channel and call each other.
+  ///使用[domain]和[appId]和创建实例
   static Future<void> create(String domain, String appId) async {
     await _channel.invokeMethod('create', {'domain': domain, 'appId': appId});
     _addEventChannelHandler();
   }
 
-  /// Destroys the RtcEngine instance and releases all resources used by the Agora SDK.
+  /// Destroys the RtcEngine instance and releases all resources
   ///
   /// This method is useful for apps that occasionally make voice or video calls, to free up resources for other operations when not making calls.
   /// Once the app calls destroy to destroy the created RtcEngine instance, you cannot use any method or callback in the SDK.
@@ -50,14 +51,14 @@ class HwRtcEngine {
     });
   }
 
-  /// Allows a user to leave a channel.
+  /// Allows a user to leave a Room.
   ///
   /// If you call the [destroy] method immediately after calling this method, the leaveRoom process interrupts, and the SDK does not trigger the onleaveRoom callback.
   static Future<int> leaveRoom() async {
     return await _channel.invokeMethod('leaveRoom');
   }
 
-  // Core Audio
+  /// Core Audio
   /// 设置本地麦克风静音。
   ///
   static Future<int> muteLocalAudio(bool mute) async {
@@ -78,7 +79,7 @@ class HwRtcEngine {
     if (Platform.isIOS) {
       return UiKitView(
         key: key,
-        viewType: 'AgoraRendererView',
+        viewType: 'HuaweiRendererView',
         onPlatformViewCreated: (viewId) {
           if (created != null) {
             created(viewId);
@@ -88,7 +89,7 @@ class HwRtcEngine {
     } else {
       return AndroidView(
         key: key,
-        viewType: 'AgoraRendererView',
+        viewType: 'HuaweiRendererView',
         onPlatformViewCreated: (viewId) {
           if (created != null) {
             created(viewId);
@@ -105,13 +106,14 @@ class HwRtcEngine {
 
   /// Sets the local video view and configures the video display settings on the local device.
   ///
+  /// 设置本地摄像头视频流页面
   /// You can call this method to bind local video streams to Widget created by [createNativeView] of the  and configure the video display settings.
   static Future<int> setupLocalView(int viewId, ViewMode viewMode) async {
     return await _channel.invokeMethod(
         'setupLocalView', {'viewId': viewId, 'viewMode': viewMode.index});
   }
 
-  /// Sets the remote user's video view.
+  /// Sets the remote user's video view. 设置远端视频流界面
   ///
   /// This method binds the remote user to the Widget created by [createNativeView].
   static Future<int> setupRemoteView(int viewId, ViewMode viewMode,
@@ -136,11 +138,14 @@ class HwRtcEngine {
     return await _channel.invokeMethod('switchCamera');
   }
 
-  // Miscellaneous Methods
+  /// Miscellaneous Methods
+  /// 上传华为SDK日志
   static Future<int> logUpload() async {
     return await _channel.invokeMethod('logUpload');
   }
 
+  ///设置日志参数
+  ///
   static Future<int> setLogParam(bool enable, LogInfo logInfo) async {
     return await _channel.invokeMethod('setLogParam', {
       "enable": enable,
@@ -266,34 +271,30 @@ class HwRtcEngine {
   /// Occurs when a remote user (Communication)/host (Live Broadcast) joins the channel.
   ///
   /// Communication profile: This callback notifies the app when another user joins the channel. If other users are already in the channel, the SDK also reports to the app on the existing users.
-  /// Live-broadcast profile: This callback notifies the app when the host joins the channel. If other hosts are already in the channel, the SDK also reports to the app on the existing hosts. Agora recommends having at most 17 hosts in a channel
   static void Function(String roomId, String userId, String nickName)
       onUserJoined;
 
   /// Occurs when a remote user (Communication)/host (Live Broadcast) leaves the channel.
-  ///
-  /// There are two reasons for users to become offline:
-  /// 1. Leave the channel: When the user/host leaves the channel, the user/host sends a goodbye message. When this message is received, the SDK determines that the user/host leaves the channel.
-  /// 2. Drop offline: When no data packet of the user or host is received for a certain period of time (20 seconds for the communication profile, and more for the live broadcast profile), the SDK assumes that the user/host drops offline. A poor network connection may lead to false detections, so Agora recommends using the signaling system for reliable offline detection.
+  ///用户下线的时候触发，
   static void Function(String roomId, String userId, int reason) onUserOffline;
 
   /// Occurs when the network connection state changes.
+  /// 当网络状态变更的时候触发
   static void Function(
       ConnStateTypes connStateTypes,
       ConnChangeReason connChangeReason,
       String description) onConnectionStateChange;
 
-  // Media Events
-
   /// Occurs when the first remote audio frame is received.
+  ///视频开始解析的时候触发
   static void Function(String roomId, String userId, int width, int height)
       onFirstRemoteVideoDecoded;
 
-  ///
+  ///日志上传回调
   static void Function(int result) onLogUploadResult;
-
+  ///日志上传进度回调
   static void Function(int progress) onLogUploadProgress;
-
+  ///默认流时回调，获取到默认流。
   static void Function(String roomId, String userId, StreamType streamType)
       onAgreedStreamAvailable;
 }

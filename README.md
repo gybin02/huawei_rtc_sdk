@@ -22,13 +22,20 @@ await HwRtcEngine.create(APP_DOMAIN, APP_ID);
 //构建视频布局：
 RtcRenderWidget(uid);
 
-//done
+//加入房间
+HwRtcEngine.joinRoom
+
+//监听他人进入房间通知
+HwRtcEngine.onUserJoined
 
 ```
 
-
 ### 3. 构建通话界面
 参考： example里面的 call.dart 页面
+
+![s1](/screen/screen1.jpg)
+![s2](/screen/screen2.jpg)
+
 
 ### 4. 更多功能
 ```yaml
