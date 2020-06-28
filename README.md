@@ -2,13 +2,15 @@
 
 这个是[Huawei RTC SDK](https://support.huaweicloud.com/demo-rtc/rtc_03_0001.html) 的Flutter封装。
 
-实时互动直播SDK：提供连麦和实时音视频流传输（收发双向）的能力。
+实时互动直播SDK：提供直播和实时音视频流传输（收发双向）的能力。
 
 ## 功能：
 - 音视频通话
+
  支持一对多，多对多的视频互动直播。
 
 - 直播
+
 连麦互动，主播加入频道时，即可实现连麦互动，观众可在直播的任一时刻切换为主播，与频道内现有主播进行连麦互动。
 
 ## 使用
@@ -18,15 +20,16 @@ huawei_rtc_engine
     git: http://techgit.meitu.com/flutter/huawei_rtc
 ```
 ## 2.使用
+以下所有放在都封装在 **HwRtcEngine** 中
 
 ### 1. 创建引擎
 ```dart
-static Future<void> create(String domain, String appId);
+await HwRtcEngine.create(APP_DOMAIN, APP_ID);
 ```
 ### 2. 加入房间
 ```dart
-  static Future<int> joinRoom(
-      UserInfo userInfo, String roomId, MediaType mediaType);
+await HwRtcEngine.joinRoom(
+      userInfo, roomId, MediaType.MEDIA_TYPE_AUDIO_VIDEO);
 ```
 
 ### 3. 监听房间
@@ -122,5 +125,3 @@ onWarning
 - 在Flutter中嵌入Native组件的正确姿势是...https://www.cnblogs.com/yunqishequ/p/9968123.html
 - 通过共享内存优化flutter外接纹理的渲染性能，实时渲染不是梦 http://www.luoyibu.cn/posts/9703/
 - [Flutter 实现视频全屏播放逻辑及解析](https://zhuanlan.zhihu.com/p/107556856)
-
-
