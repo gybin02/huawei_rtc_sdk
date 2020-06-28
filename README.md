@@ -20,7 +20,7 @@ huawei_rtc_engine
     git: http://techgit.meitu.com/flutter/huawei_rtc
 ```
 ## 2.使用
-以下所有放在都封装在 **HwRtcEngine** 中
+以下所有方法都封装在 **HwRtcEngine** 中
 
 ### 1. 创建引擎
 ```dart
@@ -34,10 +34,10 @@ await HwRtcEngine.joinRoom(
 
 ### 3. 监听房间
 ```
-//用户加入
+//其他用户加入
  static void Function(String roomId, String userId, String nickName)
       onUserJoined;
-//用户退出
+//其他用户退出
   static void Function(String roomId, String userId, int reason) onUserOffline;
 
 ```
@@ -64,14 +64,14 @@ await HwRtcEngine.joinRoom(
 
 ```
 
-### 3. 构建通话界面
+### 7. 构建通话界面
 参考： example里面的 call.dart 页面
 
 ![s1](/screen/screen1.jpg)
 ![s2](/screen/screen2.jpg)
 
 
-### 4. 更多功能
+### 8. 更多功能
 ```yaml
 create
 createNativeView
@@ -103,11 +103,8 @@ onWarning
 
 ```
 
-### Android 注意事项
+##  注意事项
 - 进入房间前需要先检测下是否有 相机权限和SD卡权限
-
-### iOS 注意事项
-
 
 ### 代办
 1. 调用 engine.destroy()会触发：F/eitu.rtcexampl( 2224): indirect_reference_table.cc:61] JNI ERROR (app bug): accessed deleted Global 0x2856
