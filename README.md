@@ -106,11 +106,13 @@ onWarning
 ##  注意事项
 - 进入房间前需要先检测下是否有 相机权限和SD卡权限
 
-### 代办
+## 代办
 1. 调用 engine.destroy()会触发：F/eitu.rtcexampl( 2224): indirect_reference_table.cc:61] JNI ERROR (app bug): accessed deleted Global 0x2856
 
-## 引用
+## 文档
+- [MethodChannel详细定义文档- YAPI](https://api-mock.meitu-int.com/project/1091/interface/api/cat_11761)
 
+## 其他
 - 构建你的第一个Flutter视频通话应用 https://segmentfault.com/a/1190000018247461
 - https://github.com/AgoraIO-Community/Agora-Flutter-WebRTC-QuickStart
 - https://pub.dev/packages/agora_rtc_wrapper
