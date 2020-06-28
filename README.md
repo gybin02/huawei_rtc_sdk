@@ -5,39 +5,36 @@
 实时互动直播SDK：提供连麦和实时音视频流传输（收发双向）的能力。
 
 ## 功能：
-- 视频通话 支持一对多，多对多的视频互动直播。
+- 音视频通话
+ 支持一对多，多对多的视频互动直播。
 
-- 直播连麦互动 主播加入频道时，即可实现连麦互动，观众可在直播的任一时刻切换为主播，与频道内现有主播进行连麦互动。
+- 直播
+连麦互动，主播加入频道时，即可实现连麦互动，观众可在直播的任一时刻切换为主播，与频道内现有主播进行连麦互动。
 
 ## 使用
 ### 1. 引入库：
 ```
-agora_rtc_engine_example
-git: http://techgit.meitu.com/flutter/huawei_rtc
+huawei_rtc_engine
+    git: http://techgit.meitu.com/flutter/huawei_rtc
 ```
 ## 2.使用
 
 ### 1. 创建引擎
 ```dart
-static Future<void> create(String domain, String appId)
+static Future<void> create(String domain, String appId);
 ```
 ### 2. 加入房间
 ```dart
   static Future<int> joinRoom(
-      UserInfo userInfo, String roomId, MediaType mediaType)
-
+      UserInfo userInfo, String roomId, MediaType mediaType);
 ```
 
 ### 3. 监听房间
 ```
+//用户加入
  static void Function(String roomId, String userId, String nickName)
       onUserJoined;
-
-  /// Occurs when a remote user (Communication)/host (Live Broadcast) leaves the channel.
-  ///
-  /// There are two reasons for users to become offline:
-  /// 1. Leave the channel: When the user/host leaves the channel, the user/host sends a goodbye message. When this message is received, the SDK determines that the user/host leaves the channel.
-  /// 2. Drop offline: When no data packet of the user or host is received for a certain period of time (20 seconds for the communication profile, and more for the live broadcast profile), the SDK assumes that the user/host drops offline. A poor network connection may lead to false detections, so Agora recommends using the signaling system for reliable offline detection.
+//用户退出
   static void Function(String roomId, String userId, int reason) onUserOffline;
 
 ```
@@ -52,11 +49,10 @@ static Future<void> create(String domain, String appId)
   static Future<void> destroy() async 
 ```
 ### 6. 获取视频播放控件
+视频播放流已经封装成widget控件，方便在任意界面使用
+
 ```
- static Widget createNativeView(Function(int viewId) created, {Key key}) 
- 
- //已经封装成更上层的
-   AgoraRenderWidget(
+   RtcRenderWidget(
     this.uid, {
     this.mode = ViewMode.VIEW_MODE_ADAPT,
     this.local = false,
@@ -110,9 +106,8 @@ onWarning
 ### iOS 注意事项
 
 
-### TODO
+### 代办
 1. 调用 engine.destroy()会触发：F/eitu.rtcexampl( 2224): indirect_reference_table.cc:61] JNI ERROR (app bug): accessed deleted Global 0x2856
-
 
 ## 引用
 
@@ -127,4 +122,5 @@ onWarning
 - 在Flutter中嵌入Native组件的正确姿势是...https://www.cnblogs.com/yunqishequ/p/9968123.html
 - 通过共享内存优化flutter外接纹理的渲染性能，实时渲染不是梦 http://www.luoyibu.cn/posts/9703/
 - [Flutter 实现视频全屏播放逻辑及解析](https://zhuanlan.zhihu.com/p/107556856)
+
 
